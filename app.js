@@ -1,33 +1,28 @@
 const loadServices = () => {
-  fetch("https://testing-8az5.onrender.com/services/")
+  fetch("https://wellness-oasis-clinic-api.onrender.com/services/")
     .then((res) => res.json())
     .then((data) => displayService(data))
     .catch((err) => console.log(err));
 };
 
 const displayService = (services) => {
-  //   console.log(services);
-  services.forEach((service) => {
+  const doctorPerPages = 6;
+  let displayedDoctors = services.slice(0, doctorPerPages);
+  if (!services || services.length === 0) {
+    // Handle no data scenario (show an error message, hide the container, etc.)
+    console.error("No services found!");
+    return;
+  }
+
+  displayedDoctors.forEach((service) => {
     const parent = document.getElementById("service-container");
     const li = document.createElement("li");
+    li.classList = "flex flex-col max-w-[260px] mx-auto border bg-gray-50 rounded-md p-3 space-y-3";
     li.innerHTML = `
-      <div class="card shadow h-100">
-                <div class="ratio ratio-16x9">
-                  <img
-                    src=${service.image}
-                    class="card-img-top"
-                    loading="lazy"
-                    alt="..."
-                  />
-                </div>
-                <div class="card-body p-3 p-xl-5">
-                  <h3 class="card-title h5">${service.name}</h3>
-                  <p class="card-text">
-                    ${service.description.slice(0, 140)}
-                  </p>
-                  <a href="#" class="btn btn-primary">Details</a>
-                </div>
-              </div>
+              <img class="w-[260px] rounded-md h-40" src=${service?.image} alt="">
+              <h3>${service?.name}</h3>
+              <p class="text-xs">${service?.description.slice(0, 100)}.</p>
+              <button class=" text-[#42A9D0]">Learn more... </button>
       `;
     parent.appendChild(li);
   });
@@ -35,59 +30,52 @@ const displayService = (services) => {
 
 const loadDoctors = (search) => {
   document.getElementById("doctors").innerHTML = "";
-  document.getElementById("spinner").style.display = "block";
-  console.log(search);
   fetch(
-    `https://wellness-oasis-clinic-api.onrender.com/doctors/list/?search=${search ? search : ""
+    `https://wellness-oasis-clinic-api.onrender.com/doctors/list/?search=${
+      search ? search : ""
     }`
   )
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
-      if (data.results.length > 0) {
-        document.getElementById("spinner").style.display = "none";
-        document.getElementById("nodata").style.display = "none";
-        displayDoctors(data?.results);
-      } else {
-        document.getElementById("doctors").innerHTML = "";
-        document.getElementById("spinner").style.display = "none";
-        document.getElementById("nodata").style.display = "block";
-      }
+      displayDoctors(data);
     });
 };
-
 const displayDoctors = (doctors) => {
   doctors?.forEach((doctor) => {
-    // console.log(doctor);
     const parent = document.getElementById("doctors");
     const div = document.createElement("div");
     div.classList.add("doc-card");
+    div.classList = "border rounded-md";
     div.innerHTML = `
-        <img class="doc-img" src=${doctor.image} alt="" />
-              <h4>${doctor?.user}</h4>
-              <h6>${doctor?.designation[0]}</h6>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis,
-                numquam!
-              </p>
-             
-              <p>
-              
-              ${doctor?.specialization?.map((item) => {
-      return `<button>${item}</button>`;
-    })}
-              </p>
+        <img class="doc-img rounded-t-md" src=${doctor.image} alt="" />
+            <div class="px-2 py-1 flex flex-col items-start justify-start space-y-2">
+            <h4 class="font-semibold text-lg mt-4">${doctor?.user}</h4>
+            <div class="flex flex-row items-start justify-start gap-1">
+            <p class="bg-gray-300 px-[3px] py-[2px] text-xs w-fit rounded">
+            ${doctor?.designation[0]}
+            </p>
+            <p class="bg-gray-300 px-[3px] py-[2px] text-xs w-fit rounded">
+            
+            ${doctor?.specialization?.map((item) => {
+              return `<button>${item}</button>`;
+            })}
+            </p>
+            </div>
+            <p class="text-xs pb-5">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis,
+              numquam!
+            </p>
+           
+            
 
-              <button > <a target="_blank" href="docdetails.html?doctorId=${doctor.id
-      }">Details</a> </button>
+            <button class="bg-[#42A9D0] px-[5px] py-[3px] text-white rounded-md"> <a target="_blank" href="docdetails.html?doctorId=${
+              doctor.id
+            }">Details</a> </button>
+            </div>
         `;
 
     parent.appendChild(div);
   });
-};
-const handleSearch = () => {
-  const value = document.getElementById("search").value;
-  loadDoctors(value);
 };
 
 const loadDesignation = () => {
@@ -95,7 +83,7 @@ const loadDesignation = () => {
     .then((res) => res.json())
     .then((data) => {
       data.forEach((item) => {
-        const parent = document.getElementById("drop-deg");
+        const parent = document.getElementById("designation");
         const li = document.createElement("li");
         li.classList.add("dropdown-item");
         li.innerText = item?.name;
@@ -103,16 +91,19 @@ const loadDesignation = () => {
       });
     });
 };
+
 const loadSpecialization = () => {
-  fetch("https://wellness-oasis-clinic-api.onrender.com/doctors/specialization/")
+  fetch(
+    "https://wellness-oasis-clinic-api.onrender.com/doctors/specialization/"
+  )
     .then((res) => res.json())
     .then((data) => {
       data.forEach((item) => {
-        const parent = document.getElementById("drop-spe");
+        const parent = document.getElementById("specialist");
         const li = document.createElement("li");
         li.classList.add("dropdown-item");
         li.innerHTML = `
-        <li onclick="loadDoctors('${item.name}')"> ${item.name}</li>
+        <li class="hover:bg-[#42A9D0] hover:px-[3px] hover:text-white hover:cursor-pointer rounded-md transition-colors duration-150" onclick="loadDoctors('${item.name}')"> ${item.name}</li>
           `;
         parent.appendChild(li);
       });
@@ -130,22 +121,21 @@ const displayReview = (reviews) => {
     const parent = document.getElementById("review-container");
     const div = document.createElement("div");
     div.classList.add("review-card");
+    div.classList = "border w-[150px] px-3 py-1 rounded-md min-h-40";
     div.innerHTML = `
-            <h4>${review.reviewer}</h4>
-            <p>
+        <h4 class="text-lg font-semibold">${review.reviewer}</h4>
+        <h6 class="text-[#42A9D0]">${review.rating}</h6>
+            <p class="text-sm pt-2">
              ${review.body.slice(0, 100)}
             </p>
-            <h6>${review.rating}</h6>
         `;
     parent.appendChild(div);
   });
 };
 
 
-
-loadReview();
-handleSearch();
-loadServices()
+loadServices();
 loadDoctors();
 loadDesignation();
 loadSpecialization();
+loadReview();

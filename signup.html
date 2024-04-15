@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+    <div class="flex flex-col items-center justify-center my-20">
+        <h2 class="text-4xl">Please <span class="text-[#42A9D0]">Register</span> </h2>
+
+        <div class="flex flex-row items-start justify-center gap-10">
+            <form class=" relative flex flex-col items-start justify-center my-20" onSubmit={handleRegistration(event)}>
+                <label class="ml-2 mb-1 text-sm">User Name</label>
+                <input id="username"
+                    class=" mb-3 w-[400px] h-8 bg-gray-100 rounded-full focus:border-[#42A9D0] border focus:outline-none px-3"
+                    type="text">
+                <label class="ml-2 mb-1 text-sm">First Name</label>
+                <input id="first_name"
+                    class=" mb-3 w-[400px] h-8 bg-gray-100 rounded-full focus:border-[#42A9D0] border focus:outline-none px-3"
+                    type="text">
+                <label class="ml-2 mb-1 text-sm">Last Name</label>
+                <input id="last_name"
+                    class=" mb-3 w-[400px] h-8 bg-gray-100 rounded-full focus:border-[#42A9D0] border focus:outline-none px-3"
+                    type="text">
+                <label class="ml-2 mb-1 text-sm">Email</label>
+                <input id="email"
+                    class=" mb-3 w-[400px] h-8 bg-gray-100 rounded-full focus:border-[#42A9D0] border focus:outline-none px-3"
+                    type="text">
+                <label class="ml-2 mb-1 text-sm">Password</label>
+                <input id="password"
+                    class=" mb-3 w-[400px] h-8 bg-gray-100 rounded-full focus:border-[#42A9D0] border focus:outline-none px-3"
+                    type="password">
+                <label class="ml-2 mb-1 text-sm">Confirm Password</label>
+                <input id="confirm_password"
+                    class=" mb-3 w-[400px] h-8 bg-gray-100 rounded-full focus:border-[#42A9D0] border focus:outline-none px-3"
+                    type="password">
+
+                <p class="text-xs absolute bottom-[60px] right-2">Already have an account? please <a href="./login.html" class="underline hover:text-[#42A9D0]">login</a></p>
+                <input type="submit" class="bg-[#42A9D0] w-20 mx-auto rounded text-white px-[4px] py-[2px] mt-10">
+            </form>
+            <div>
+                <img class="w-[500px] h-[500px] my-16" src="./assets/signup.png" alt="">
+            </div>
+        </div>
+    </div>
+</body>
+<script src="./authentication.js"></script>
+
+</html>
