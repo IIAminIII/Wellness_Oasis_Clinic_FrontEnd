@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wellness Oasis Clinic</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+  <!-- navigation bar starting -->
+  <header
+    class="relative z-20 w-full  bg-white/90 shadow-slate-700/5 after:absolute after:top-full after:left-0 after:z-10 after:block after:h-px after:w-full after:bg-slate-200 lg:border-slate-200 lg:backdrop-blur-sm lg:after:hidden">
+    <div class="relative mx-auto max-w-full px-6 lg:max-w-5xl xl:max-w-7xl 2xl:max-w-[96rem]">
+      <nav aria-label="main navigation" class="flex h-[5.5rem] items-stretch justify-between font-medium text-slate-700"
+        role="navigation">
+        <!-- Brand logo -->
+        <a id="WindUI" aria-label="WindUI logo" aria-current="page"
+          class="flex items-center gap-2 py-3 text-lg whitespace-nowrap focus:outline-none lg:flex-1"
+          href="javascript:void(0)">
+          <image class="w-16" src="./assets/mainlogo.svg" alt="Main Logo" />
+          <h3 class="text-[#42A9D0]">Wellness Oasis</h3>
+        </a>
+        <!-- Mobile trigger -->
+        <button class="relative self-center order-10 visible block w-10 h-10 opacity-100 lg:hidden"
+          aria-expanded="false" aria-label="Toggle navigation">
+          <div class="absolute w-6 transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+            <span aria-hidden="true"
+              class="absolute block h-0.5 w-9/12 -translate-y-2 transform rounded-full bg-slate-900 transition-all duration-300"></span>
+            <span aria-hidden="true"
+              class="absolute block h-0.5 w-6 transform rounded-full bg-slate-900 transition duration-300"></span>
+            <span aria-hidden="true"
+              class="absolute block h-0.5 w-1/2 origin-top-left translate-y-2 transform rounded-full bg-slate-900 transition-all duration-300"></span>
+          </div>
+        </button>
+        <!-- Navigation links -->
+        <ul role="menubar" aria-label="Select page"
+          class="invisible absolute top-0 left-0 z-[-1] ml-auto h-screen w-full justify-center overflow-hidden overflow-y-auto overscroll-contain bg-white/90 px-8 pb-12 pt-28 font-medium opacity-0 transition-[opacity,visibility] duration-300 lg:visible lg:relative lg:top-0 lg:z-0 lg:flex lg:h-full lg:w-auto lg:items-stretch lg:overflow-visible lg:bg-white/0 lg:px-0 lg:py-0 lg:pt-0 lg:opacity-100">
+          <li role="none" class="flex items-stretch">
+            <a role="menuitem" aria-haspopup="false"
+              class="flex items-center gap-2 py-4 transition-colors duration-300 hover:text-cyan-500 focus:text-cyan-600 focus:outline-none focus-visible:outline-none lg:px-4"
+              href="javascript:void(0)"> <span class="border-b-2 border-b-[#42A9D0]">Home</span></a>
+          </li>
+          <li role="none" class="flex items-stretch">
+            <a role="menuitem" aria-current="page" aria-haspopup="false"
+              class="flex items-center gap-2 py-4 transition-colors duration-300  hover:text-cyan-600 focus:text-cyan-600 focus:outline-none focus-visible:outline-none lg:px-4"
+              href="javascript:void(0)"> <span class="border-b-2 border-b-[#42A9D0]">Service</span> </a>
+          </li>
+          <li role="none" class="flex items-stretch">
+            <a role="menuitem" aria-haspopup="false"
+              class="flex items-center gap-2 py-4 transition-colors duration-300 hover:text-cyan-500 focus:text-cyan-600 focus:outline-none focus-visible:outline-none lg:px-4"
+              href="javascript:void(0)"> <span class="border-b-2 border-b-[#42A9D0]">Contact Us</span>
+            </a>
+          </li>
+          <li role="none" class="flex items-stretch">
+            <a role="menuitem" aria-haspopup="false"
+              class="flex items-center gap-2 py-4 transition-colors duration-300 hover:text-cyan-500 focus:text-cyan-600 focus:outline-none focus-visible:outline-none lg:px-4"
+              href="javascript:void(0)"> <span class="border-b-2 border-b-[#42A9D0]">Sign Up</span> </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- navigation bar ending -->
+
+  <!-- banner section start -->
+  <section class=" bg-[#42A9D0]">
+    <div class="flex flex-col md:flex-row items-center justify-center mx-auto max-w-7xl">
+      <div>
+        <img class="" src="./assets/banner.png" alt="">
+      </div>
+      <div class="w-1/2 lg:max-w-[500px] mx-auto space-y-4 md:space-y-10">
+        <h1 class="text-2xl md:text-3xl lg:text-5xl font-bold text-[#2d728c]">Providing Quality
+          Healthcare</h1>
+        <p class="text-sm lg:text-base">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris at nunc
+          feugiat, pretium quam
+          malesuada,
+          luctus ex. Duis eu dui rhoncus, faucibus diam ac, iaculis urna. Phasellus pellentesque dui in
+          suscipit
+          eleifend.</p>
+      </div>
+    </div>
+  </section>
+  <!-- banner section ends -->
+
+  <!-- carousel section start -->
+  <section class="my-20 max-w-7xl mx-auto">
+    <h3 class="text-[#42A9D0] text-center text-3xl">Services We Provide</h3>
+    <p class="text-center max-w-xl my-10 mx-auto">Lorem ipsum dolor sit amet consectetur adipiscing elit semper
+      dalar elementum tempus hac tellus libero accumsan. </p>
+
+    <!-- Component: Carousel with controls inside -->
+    <div class="relative w-full glide-01">
+      <!-- Slides -->
+      <div class="overflow-hidden" data-glide-el="track">
+        <ul>
+        </ul>
+      </div>
+      <!-- Controls -->
+      <div class="absolute left-0 flex items-center justify-between w-full h-0 px-4 top-1/2 " data-glide-el="controls">
+        <button
+          class="inline-flex items-center justify-center w-8 h-8 transition duration-300 border rounded-full lg:w-12 lg:h-12 text-slate-700 border-slate-700 hover:text-slate-900 hover:border-slate-900 focus-visible:outline-none bg-white/20"
+          data-glide-dir="<" aria-label="prev slide">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-5 h-5">
+            <title>prev slide</title>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
+          </svg>
+        </button>
+        <button
+          class="inline-flex items-center justify-center w-8 h-8 transition duration-300 border rounded-full lg:w-12 lg:h-12 text-slate-700 border-slate-700 hover:text-slate-900 hover:border-slate-900 focus-visible:outline-none bg-white/20"
+          data-glide-dir=">" aria-label="next slide">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-5 h-5">
+            <title>next slide</title>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Glide.js/3.0.2/glide.js"></script>
+
+    <script>
+      var glide01 = new Glide('.glide-01', {
+        type: 'carousel',
+        focusAt: 'center',
+        perView: 3,
+        autoplay: 3000,
+        animationDuration: 700,
+        gap: 24,
+        classes: {
+          activeNav: '[&>*]:bg-slate-700',
+        },
+        breakpoints: {
+          1024: {
+            perView: 2
+          },
+          640: {
+            perView: 1
+          }
+        },
+      });
+
+      glide01.mount();
+    </script>
+    <!-- End Carousel with controls inside -->
+  </section>
+  <!-- carousel section ends -->
+
+
+</body>
+
+</html>

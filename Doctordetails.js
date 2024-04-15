@@ -1,12 +1,12 @@
 const getparams = () => {
     const param = new URLSearchParams(window.location.search).get("doctorId");
     loadTime(param);
-    fetch(`https://testing-8az5.onrender.com/doctor/list/${param}`)
+    fetch(`https://wellness-oasis-clinic-api.onrender.com/doctors/list/${param}`)
 
         .then((res) => res.json())
         .then((data) => displayDetails(data));
 
-    fetch(`https://testing-8az5.onrender.com/doctor/review/?doctor_id=${param}`)
+    fetch(`https://wellness-oasis-clinic-api.onrender.com/doctors/reviews/?doctor_id=${param}`)
         .then((res) => res.json())
         .then((data) => doctorReview(data));
 };
@@ -36,7 +36,7 @@ const displayDetails = (doctor) => {
     <img src=${doctor.image} alt="" />
   </div>
   <div class="doc-info"> 
-    <h1>${doctor.full_name} </h1>
+    <h1>${doctor.user} </h1>
     ${doctor.specialization.map((item) => {
         return `<button class="doc-detail-btn">${item}</button>`;
     })}
@@ -62,7 +62,7 @@ const displayDetails = (doctor) => {
     parent.appendChild(div);
 };
 const loadTime = (id) => {
-    fetch(`https://testing-8az5.onrender.com/doctor/availabletime/?doctor_id = ${id}`)
+    fetch(`https://wellness-oasis-clinic-api.onrender.com/doctors/availableTime/?doctor_id = ${id}`)
         .then((res) => res.json())
         .then((data) => {
             data.forEach((item) => {
@@ -94,7 +94,7 @@ const handleAppointment = () => {
         doctor: param,
     };
     console.log(info);
-    fetch("https://testing-8az5.onrender.com/appointment/", {
+    fetch("https://wellness-oasis-clinic-api.onrender.com/appointments/", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify(info),
@@ -107,7 +107,7 @@ const handleAppointment = () => {
 
 const loadPatientId = () => {
     const user_id = localStorage.getItem("user_id");
-    fetch(`https://testing-8az5.onrender.com/patient/list/?user_id=${user_id}`)
+    fetch(`https://wellness-oasis-clinic-api.onrender.com/patients/list/?user_id=${user_id}`)
         .then((res) => res.json())
         .then((data) => {
             localStorage.setItem("patient_id", data[0].id);
