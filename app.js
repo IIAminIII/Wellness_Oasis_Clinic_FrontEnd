@@ -22,7 +22,7 @@ const displayService = (services) => {
               <img class="w-[260px] rounded-md h-40" src=${service?.image} alt="">
               <h3>${service?.name}</h3>
               <p class="text-xs">${service?.description.slice(0, 100)}.</p>
-              <a class=" text-[#42A9D0] href="services.html">Learn more... </a>
+              <button class=" text-[#42A9D0] > <a href="services.html">Learn more... </a></button>
       `;
     parent.appendChild(li);
   });
@@ -31,8 +31,7 @@ const displayService = (services) => {
 const loadDoctors = (search) => {
   document.getElementById("doctors").innerHTML = "";
   fetch(
-    `https://wellness-oasis-clinic-api.onrender.com/doctors/list/?search=${
-      search ? search : ""
+    `https://wellness-oasis-clinic-api.onrender.com/doctors/list/?search=${search ? search : ""
     }`
   )
     .then((res) => res.json())
@@ -57,8 +56,8 @@ const displayDoctors = (doctors) => {
             <p class="bg-gray-300 px-[3px] py-[2px] text-xs w-fit rounded">
             
             ${doctor?.specialization?.map((item) => {
-              return `<button>${item}</button>`;
-            })}
+      return `<button>${item}</button>`;
+    })}
             </p>
             </div>
             <p class="text-xs pb-5">
@@ -68,9 +67,8 @@ const displayDoctors = (doctors) => {
            
             
 
-            <button class="bg-[#42A9D0] px-[5px] py-[3px] text-white rounded-md"> <a target="_blank" href="docdetails.html?doctorId=${
-              doctor.id
-            }">Details</a> </button>
+            <button class="bg-[#42A9D0] px-[5px] py-[3px] text-white rounded-md"> <a target="_blank" href="docdetails.html?doctorId=${doctor.id
+      }">Details</a> </button>
             </div>
         `;
 
@@ -79,18 +77,25 @@ const displayDoctors = (doctors) => {
 };
 
 const loadDesignation = () => {
-  fetch("https://wellness-oasis-clinic-api.onrender.com/doctors/designation/")
+  fetch(
+    "https://wellness-oasis-clinic-api.onrender.com/doctors/designation/"
+  )
     .then((res) => res.json())
     .then((data) => {
       data.forEach((item) => {
         const parent = document.getElementById("designation");
         const li = document.createElement("li");
         li.classList.add("dropdown-item");
-        li.innerText = item?.name;
+        li.innerHTML = `
+        <li class="hover:bg-[#42A9D0] hover:px-[3px] hover:text-white hover:cursor-pointer rounded-md transition-colors duration-150" onclick="loadDoctors('${item.name}')"> ${item.name}</li>
+          `;
         parent.appendChild(li);
       });
     });
 };
+
+
+
 
 const loadSpecialization = () => {
   fetch(
