@@ -22,7 +22,7 @@ const displayService = (services) => {
               <img class="w-[260px] rounded-md h-40" src=${service?.image} alt="">
               <h3>${service?.name}</h3>
               <p class="text-xs">${service?.description.slice(0, 100)}.</p>
-              <button class=" text-[#42A9D0] href="services.html">Learn more... </button>
+              <a class=" text-[#42A9D0] href="services.html">Learn more... </a>
       `;
     parent.appendChild(li);
   });
