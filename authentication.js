@@ -42,6 +42,9 @@ const handleRegistration = (event) => {
       "password and confirm password do not match";
     alert("password and confirm password do not match");
   }
+  if (data && data.success) {
+    window.location.href = "login.html";
+  }
 };
 
 const getValue = (id) => {
@@ -54,82 +57,57 @@ const handleLogin = (event) => {
   const username = getValue("login-username");
   const password = getValue("login-password");
 
-  if ((username, password)) {
-    fetch("https://wellness-oasis-clinic-api.onrender.com/patients/login/", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ username, password }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-
-        if (data.token && data.user_id) {
-          localStorage.setItem("token", data.token);
-          localStorage.setItem("user_id", data.user_id);
-          window.location.href = "index.html";
-        }
-      });
-  }
-};
-
-const DisplayloginOrLogout = () => {
-  const user = true;
-  const parent = document.getElementById("LoginOrLogout");
-
-  //   login
-  const a = document.createElement("a");
-  const span1 = document.createElement("span");
-  a.classList =
-    "flex items-center gap-2 py-4 transition-colors duration-300 hover:text-cyan-500 focus:text-cyan-600 focus:outline-none focus-visible:outline-none lg:px-4";
-  a.href = "./login.html";
-  span1.classList = "bg-[#42A9D0] px-4 py-2 rounded text-white";
-  span1.innerHTML = "Login";
-  a.appendChild(span1);
-
-  // logout
-  const p = document.createElement("p");
-  const span = document.createElement("span");
-  p.classList =
-    "flex items-center gap-2 py-4 transition-colors duration-300 hover:text-cyan-500 focus:text-cyan-600 focus:outline-none focus-visible:outline-none lg:px-4";
-
-  span.classList = "bg-[#42A9D0] px-4 py-2 rounded text-white";
-  span.innerHTML = "Logout";
-  span.addEventListener("click", handlelogOut);
-  p.appendChild(span);
-
-  // view profile
-  const a1 = document.createElement("a");
-  const span01 = document.createElement("span");
-  a1.classList =
-    "flex items-center gap-2 py-4 transition-colors duration-300 hover:text-cyan-500 focus:text-cyan-600 focus:outline-none focus-visible:outline-none lg:px-4";
-  a1.href = "./userDetail.html";
-  span01.classList = "border-b-2 border-b-[#42A9D0]";
-  span01.innerHTML = "View Profile";
-  a1.appendChild(span01);
-  {
-    user ? parent.appendChild(a1) : "";
-  }
-  {
-    user ? parent.appendChild(p) : parent.appendChild(a);
-  }
-};
-
-const handlelogOut = () => {
-  const token = localStorage.getItem("token");
-  fetch("https://wellness-oasis-clinic-api.onrender.com/patients/logout", {
+  fetch("https://wellness-oasis-clinic-api.onrender.com/patients/login/", {
     method: "POST",
-    headers: {
-      Authorization: `Token ${token}`,
-      "Content-Type": "application/json",
-    },
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ username, password }),
   })
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
-      localStorage.removeItem("token");
-      localStorage.removeItem("user_id");
+      if (data.token && data.user_id) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user_id", data.user_id);
+        // Redirect to main page after successful login
+        window.location.href = "index.html";
+        alert("Login successful");
+      } else {
+        document.getElementById("error").innerText = "Invalid Username or Password";
+      }
+    })
+    .catch((error) => {
+      console.error("Login Error:", error);
+      document.getElementById("error").innerText = "Login failed. Please try again.";
     });
 };
 
-DisplayloginOrLogout();
+const handleLogout = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    return; // Already logged out
+  }
+
+  try {
+    const response = await fetch("https://wellness-oasis-clinic-api.onrender.com/patients/logout", {
+      method: "POST",
+      headers: {
+        Authorization: `Token ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.ok) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user_id");
+      // Redirect to login page after successful logout
+      window.location.href = "login.html";
+      alert("Logout successful");
+    } else {
+      console.error("Logout Error:", response.statusText);
+      // Handle logout error (optional: display message)
+    }
+  } catch (error) {
+    console.error("Logout Error:", error);
+    // Handle logout error (optional: display message)
+  }
+};
+

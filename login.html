@@ -12,7 +12,7 @@
     <div class="flex flex-col items-center justify-center my-20">
         <h2 class="text-4xl">Please <span class="text-[#42A9D0]">Login</span> </h2>
         <div class="flex flex-row my-20">
-            <form onSubmit={handleLogin(event)} class="flex relative flex-col mt-20">
+            <form id="login-form" onsubmit="handleLogin(event)" class="flex relative flex-col mt-20">
                 <label class="ml-2 mb-1 text-sm">User Name</label>
                 <input id="login-username"
                     class=" mb-3 w-[400px] h-8 bg-gray-100 rounded-full focus:border-[#42A9D0] border focus:outline-none px-3"
@@ -23,7 +23,8 @@
                     type="password">
                 <p class="text-xs absolute bottom-[80px] right-2">New to Wellness? please <a href="./signup.html"
                         class="underline hover:text-[#42A9D0]">register</a></p>
-                <input type="submit" class="bg-[#42A9D0] w-20 mx-auto rounded text-white px-[4px] py-[2px] mt-6 hover:cursor-pointer hover:opacity-90">
+                <input type="submit"
+                    class="bg-[#42A9D0] w-20 mx-auto rounded text-white px-[4px] py-[2px] mt-6 hover:cursor-pointer hover:opacity-90">
             </form>
             <img class="w-[500px]" src="./assets/login.png" alt="">
         </div>
@@ -32,3 +33,4 @@
 </body>
 
 </html>
+
