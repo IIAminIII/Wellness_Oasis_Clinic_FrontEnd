@@ -53,6 +53,20 @@ function firstError(value) {
   return String(value);
 }
 
+function httpErrorMessage(status) {
+  const messages = {
+    400: "The server could not process that request.",
+    403: "You do not have permission to perform that action.",
+    404: "This feature is temporarily unavailable while the clinic server updates.",
+    429: "Too many requests were sent. Please wait a moment and try again.",
+    500: "The clinic server encountered an error. Please try again shortly.",
+    502: "The clinic server is temporarily unavailable.",
+    503: "The clinic server is temporarily unavailable.",
+    504: "The clinic server took too long to respond.",
+  };
+  return messages[status] || "Something went wrong. Please try again.";
+}
+
 async function apiRequest(path, options = {}) {
   const headers = new Headers(options.headers || {});
   const isFormData = options.body instanceof FormData;
@@ -76,10 +90,11 @@ async function apiRequest(path, options = {}) {
   }
 
   const contentType = response.headers.get("content-type") || "";
+  const isJson = contentType.includes("application/json");
   const data =
     response.status === 204
       ? null
-      : contentType.includes("application/json")
+      : isJson
         ? await response.json()
         : await response.text();
 
@@ -88,9 +103,11 @@ async function apiRequest(path, options = {}) {
       authStore.clear();
       window.dispatchEvent(new CustomEvent("wellness:session-expired"));
     }
-    const error = new Error(firstError(data?.errors || data));
+    const error = new Error(
+      isJson ? firstError(data?.errors || data) : httpErrorMessage(response.status)
+    );
     error.status = response.status;
-    error.details = data?.errors || data;
+    error.details = isJson ? data?.errors || data : null;
     throw error;
   }
   return data;

@@ -84,9 +84,31 @@ async function loadPortal() {
     portalAppointments = listOf(appointmentsResponse);
     renderAppointments();
   } catch (error) {
-    document.querySelector("#appointment-list").innerHTML =
-      `<div class="error-state">${escapeHTML(error.message)}</div>`;
+    renderPortalFailure(error);
   }
+}
+
+function renderPortalFailure(error) {
+  document.querySelector("#profile-card").innerHTML = `
+    <div class="error-state">
+      <h3>Profile unavailable</h3>
+      <p>The clinic server could not load your details.</p>
+    </div>`;
+  ["#stat-upcoming", "#stat-completed", "#stat-total"].forEach((selector) => {
+    document.querySelector(selector).textContent = "—";
+  });
+  const target = document.querySelector("#appointment-list");
+  target.innerHTML = `
+    <div class="error-state">
+      <h3>Portal temporarily unavailable</h3>
+      <p>${escapeHTML(error.message)}</p>
+      <button class="button button-primary button-small" data-retry-portal type="button">
+        Try again
+      </button>
+    </div>`;
+  target
+    .querySelector("[data-retry-portal]")
+    ?.addEventListener("click", loadPortal);
 }
 
 async function cancelAppointment(id) {
