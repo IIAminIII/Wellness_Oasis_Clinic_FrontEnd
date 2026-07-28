@@ -1,146 +1,132 @@
-const loadServices = () => {
-  fetch("https://wellness-oasis-clinic-api.onrender.com/services/")
-    .then((res) => res.json())
-    .then((data) => displayService(data))
-    .catch((err) => console.log(err));
+const homeState = {
+  doctors: [],
+  searchTimer: null,
 };
 
-const displayService = (services) => {
-  const doctorPerPages = 6;
-  let displayedDoctors = services.slice(0, doctorPerPages);
-  if (!services || services.length === 0) {
-    // Handle no data scenario (show an error message, hide the container, etc.)
-    console.error("No services found!");
-    return;
+function serviceCard(service) {
+  const image = service.image
+    ? `<img src="${escapeHTML(service.image)}" alt="" loading="lazy">`
+    : "✦";
+  return `
+    <article class="service-card">
+      <div class="service-icon">${image}</div>
+      <h3>${escapeHTML(service.name)}</h3>
+      <p>${escapeHTML(service.description).slice(0, 145)}${
+        service.description.length > 145 ? "…" : ""
+      }</p>
+      <a class="text-link" href="services.html">Explore service →</a>
+    </article>`;
+}
+
+function doctorCard(doctor) {
+  const specialties = doctor.specialization || [];
+  const photo = doctor.image
+    ? `<img src="${escapeHTML(doctor.image)}" alt="${escapeHTML(
+        doctor.full_name
+      )}" loading="lazy">`
+    : `<div class="empty-state">${escapeHTML(initials(doctor.full_name))}</div>`;
+  return `
+    <article class="doctor-card">
+      <div class="doctor-photo">
+        ${photo}
+        ${
+          doctor.is_accepting_patients
+            ? '<span class="doctor-availability">Accepting patients</span>'
+            : ""
+        }
+      </div>
+      <div class="doctor-body">
+        <h3>Dr. ${escapeHTML(doctor.full_name)}</h3>
+        <p>${escapeHTML(doctor.designation?.[0]?.name || "Medical specialist")}</p>
+        <div class="tag-row">
+          ${specialties
+            .slice(0, 2)
+            .map((item) => `<span class="tag">${escapeHTML(item.name)}</span>`)
+            .join("")}
+        </div>
+        <div class="doctor-meta">
+          <div class="doctor-fee">
+            <small>Consultation</small>
+            <strong>৳${Number(doctor.fee).toLocaleString("en-BD")}</strong>
+          </div>
+          <a class="button button-primary button-small" href="docdetails.html?doctorId=${
+            doctor.id
+          }">View profile</a>
+        </div>
+      </div>
+    </article>`;
+}
+
+function reviewCard(review) {
+  return `
+    <article class="review-card">
+      <div class="review-stars" aria-label="${review.rating} out of 5 stars">${"★".repeat(
+        review.rating
+      )}${"☆".repeat(5 - review.rating)}</div>
+      <blockquote>“${escapeHTML(review.body).slice(0, 180)}”</blockquote>
+      <div class="reviewer">
+        <span class="avatar">${escapeHTML(initials(review.reviewer_name))}</span>
+        <span>${escapeHTML(review.reviewer_name || "Verified patient")}</span>
+      </div>
+    </article>`;
+}
+
+async function loadServices() {
+  const target = document.querySelector("#service-container");
+  if (!target) return;
+  try {
+    const services = listOf(await apiRequest("/services/?page_size=6"));
+    target.innerHTML = services.slice(0, 6).map(serviceCard).join("");
+    if (!services.length) {
+      target.innerHTML = '<div class="empty-state">Services are being updated.</div>';
+    }
+  } catch (error) {
+    target.innerHTML = `<div class="error-state">${escapeHTML(error.message)}</div>`;
   }
+}
 
-  displayedDoctors.forEach((service) => {
-    const parent = document.getElementById("service-container");
-    const li = document.createElement("li");
-    li.classList = "flex flex-col max-w-[260px] mx-auto border bg-gray-50 rounded-md p-3 space-y-3";
-    li.innerHTML = `
-              <img class="w-[260px] rounded-md h-40" src=${service?.image} alt="">
-              <h3>${service?.name}</h3>
-              <p class="text-xs">${service?.description.slice(0, 100)}.</p>
-              <button class=" text-[#42A9D0] > <a href="services.html">Learn more... </a></button>
-      `;
-    parent.appendChild(li);
+async function loadDoctors(search = "") {
+  const target = document.querySelector("#doctor-list");
+  if (!target) return;
+  target.innerHTML = '<div class="loading-state">Finding available doctors…</div>';
+  try {
+    const query = search ? `?search=${encodeURIComponent(search)}` : "";
+    homeState.doctors = listOf(await apiRequest(`/doctors/list/${query}`));
+    target.innerHTML = homeState.doctors.map(doctorCard).join("");
+    if (!homeState.doctors.length) {
+      target.innerHTML =
+        '<div class="empty-state">No doctors match that search. Try a speciality or name.</div>';
+    }
+  } catch (error) {
+    target.innerHTML = `<div class="error-state">${escapeHTML(error.message)}</div>`;
+  }
+}
+
+async function loadReviews() {
+  const target = document.querySelector("#review-container");
+  if (!target) return;
+  try {
+    const reviews = listOf(await apiRequest("/doctors/reviews/?page_size=3"));
+    target.innerHTML = reviews.slice(0, 3).map(reviewCard).join("");
+    if (!reviews.length) {
+      target.closest("section")?.remove();
+    }
+  } catch {
+    target.closest("section")?.remove();
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadServices();
+  loadDoctors();
+  loadReviews();
+
+  const search = document.querySelector("#doctor-search");
+  search?.addEventListener("input", (event) => {
+    clearTimeout(homeState.searchTimer);
+    homeState.searchTimer = setTimeout(
+      () => loadDoctors(event.target.value.trim()),
+      280
+    );
   });
-};
-
-const loadDoctors = (search) => {
-  document.getElementById("doctors").innerHTML = "";
-  fetch(
-    `https://wellness-oasis-clinic-api.onrender.com/doctors/list/?search=${search ? search : ""
-    }`
-  )
-    .then((res) => res.json())
-    .then((data) => {
-      displayDoctors(data);
-    });
-};
-const displayDoctors = (doctors) => {
-  doctors?.forEach((doctor) => {
-    const parent = document.getElementById("doctors");
-    const div = document.createElement("div");
-    div.classList.add("doc-card");
-    div.classList = "border rounded-md";
-    div.innerHTML = `
-        <img class="doc-img rounded-t-md" src=${doctor.image} alt="" />
-            <div class="px-2 py-1 flex flex-col items-start justify-start space-y-2">
-            <h4 class="font-semibold text-lg mt-4">${doctor?.user}</h4>
-            <div class="flex flex-row items-start justify-start gap-1">
-            <p class="bg-gray-300 px-[3px] py-[2px] text-xs w-fit rounded">
-            ${doctor?.designation[0]}
-            </p>
-            <p class="bg-gray-300 px-[3px] py-[2px] text-xs w-fit rounded">
-            
-            ${doctor?.specialization?.map((item) => {
-      return `<button>${item}</button>`;
-    })}
-            </p>
-            </div>
-            <p class="text-xs pb-5">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis,
-              numquam!
-            </p>
-           
-            
-
-            <button class="bg-[#42A9D0] px-[5px] py-[3px] text-white rounded-md"> <a target="_blank" href="docdetails.html?doctorId=${doctor.id
-      }">Details</a> </button>
-            </div>
-        `;
-
-    parent.appendChild(div);
-  });
-};
-
-const loadDesignation = () => {
-  fetch(
-    "https://wellness-oasis-clinic-api.onrender.com/doctors/designation/"
-  )
-    .then((res) => res.json())
-    .then((data) => {
-      data.forEach((item) => {
-        const parent = document.getElementById("designation");
-        const li = document.createElement("li");
-        li.classList.add("dropdown-item");
-        li.innerHTML = `
-        <li class="hover:bg-[#42A9D0] hover:px-[3px] hover:text-white hover:cursor-pointer rounded-md transition-colors duration-150" onclick="loadDoctors('${item.name}')"> ${item.name}</li>
-          `;
-        parent.appendChild(li);
-      });
-    });
-};
-
-
-
-
-const loadSpecialization = () => {
-  fetch(
-    "https://wellness-oasis-clinic-api.onrender.com/doctors/specialization/"
-  )
-    .then((res) => res.json())
-    .then((data) => {
-      data.forEach((item) => {
-        const parent = document.getElementById("specialist");
-        const li = document.createElement("li");
-        li.classList.add("dropdown-item");
-        li.innerHTML = `
-        <li class="hover:bg-[#42A9D0] hover:px-[3px] hover:text-white hover:cursor-pointer rounded-md transition-colors duration-150" onclick="loadDoctors('${item.name}')"> ${item.name}</li>
-          `;
-        parent.appendChild(li);
-      });
-    });
-};
-
-const loadReview = () => {
-  fetch("https://wellness-oasis-clinic-api.onrender.com/doctors/reviews/")
-    .then((res) => res.json())
-    .then((data) => displayReview(data));
-};
-
-const displayReview = (reviews) => {
-  reviews.forEach((review) => {
-    const parent = document.getElementById("review-container");
-    const div = document.createElement("div");
-    div.classList.add("review-card");
-    div.classList = "border w-[150px] px-3 py-1 rounded-md min-h-40";
-    div.innerHTML = `
-        <h4 class="text-lg font-semibold">${review.reviewer}</h4>
-        <h6 class="text-[#42A9D0]">${review.rating}</h6>
-            <p class="text-sm pt-2">
-             ${review.body.slice(0, 100)}
-            </p>
-        `;
-    parent.appendChild(div);
-  });
-};
-
-
-loadServices();
-loadDoctors();
-loadDesignation();
-loadSpecialization();
-loadReview();
+});
