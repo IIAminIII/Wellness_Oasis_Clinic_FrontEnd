@@ -1,208 +1,76 @@
+<!doctype html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-
-<body>
-    <!-- navigation bar starting -->
-    <header
-        class="relative z-20 w-full  bg-white/90 shadow-slate-700/5 after:absolute after:top-full after:left-0 after:z-10 after:block after:h-px after:w-full after:bg-slate-200 lg:border-slate-200 lg:backdrop-blur-sm lg:after:hidden">
-        <div class="relative mx-auto max-w-full px-6 lg:max-w-5xl xl:max-w-7xl 2xl:max-w-[96rem]">
-            <nav aria-label="main navigation"
-                class="flex h-[5.5rem] items-stretch justify-between font-medium text-slate-700" role="navigation">
-                <!-- Brand logo -->
-                <a id="WindUI" aria-label="WindUI logo" aria-current="page"
-                    class="flex items-center gap-2 py-3 text-lg whitespace-nowrap focus:outline-none lg:flex-1"
-                    href="javascript:void(0)">
-                    <image class="w-16" src="./assets/mainlogo.svg" alt="Main Logo" />
-                    <h3 class="text-[#42A9D0]">Wellness Oasis</h3>
-                </a>
-                <!-- Mobile trigger -->
-                <button class="relative self-center order-10 visible block w-10 h-10 opacity-100 lg:hidden"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <div class="absolute w-6 transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
-                        <span aria-hidden="true"
-                            class="absolute block h-0.5 w-9/12 -translate-y-2 transform rounded-full bg-slate-900 transition-all duration-300"></span>
-                        <span aria-hidden="true"
-                            class="absolute block h-0.5 w-6 transform rounded-full bg-slate-900 transition duration-300"></span>
-                        <span aria-hidden="true"
-                            class="absolute block h-0.5 w-1/2 origin-top-left translate-y-2 transform rounded-full bg-slate-900 transition-all duration-300"></span>
-                    </div>
-                </button>
-                <!-- Navigation links -->
-                <ul role="menubar" aria-label="Select page"
-                    class="invisible absolute top-0 left-0 z-[-1] ml-auto h-screen w-full justify-center overflow-hidden overflow-y-auto overscroll-contain bg-white/90 px-8 pb-12 pt-28 font-medium opacity-0 transition-[opacity,visibility] duration-300 lg:visible lg:relative lg:top-0 lg:z-0 lg:flex lg:h-full lg:w-auto lg:items-stretch lg:overflow-visible lg:bg-white/0 lg:px-0 lg:py-0 lg:pt-0 lg:opacity-100">
-                    <li role="none" class="flex items-stretch">
-                        <a role="menuitem" aria-haspopup="false"
-                            class="flex items-center gap-2 py-4 transition-colors duration-300 hover:text-cyan-500 focus:text-cyan-600 focus:outline-none focus-visible:outline-none lg:px-4"
-                            href="javascript:void(0)"> <span class="border-b-2 border-b-[#42A9D0]">Home</span></a>
-                    </li>
-                    <li role="none" class="flex items-stretch">
-                        <a role="menuitem" aria-current="page" aria-haspopup="false"
-                            class="flex items-center gap-2 py-4 transition-colors duration-300  hover:text-cyan-600 focus:text-cyan-600 focus:outline-none focus-visible:outline-none lg:px-4"
-                            href="/services.html"> <span class="border-b-2 border-b-[#42A9D0]">Service</span> </a>
-                    </li>
-                    <li role="none" class="flex items-stretch">
-                        <a role="menuitem" aria-haspopup="false"
-                            class="flex items-center gap-2 py-4 transition-colors duration-300 hover:text-cyan-500 focus:text-cyan-600 focus:outline-none focus-visible:outline-none lg:px-4"
-                            href="./contactus.html"> <span class="border-b-2 border-b-[#42A9D0]">Contact Us</span>
-                        </a>
-                    </li>
-                    <li role="none" id="LoginOrLogout" class="flex items-stretch">
-
-                    </li>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Manage your Wellness Oasis profile and appointments.">
+    <title>My patient portal | Wellness Oasis Clinic</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="api.js" defer></script>
+    <script src="ui.js" defer></script>
+    <script src="userinfo.js" defer></script>
+  </head>
+  <body>
+    <div data-site-header></div>
+    <main class="container portal-layout">
+      <aside id="profile-card" class="panel profile-panel">
+        <div class="loading-state">Loading profile…</div>
+      </aside>
+      <section class="portal-main">
+        <div class="portal-header">
+          <div>
+            <span class="eyebrow">Patient portal</span>
+            <h1>Hello, <span id="welcome-name">there</span></h1>
+            <p>Manage your upcoming visits and personal details.</p>
+          </div>
+          <a class="button button-primary" href="index.html#doctors">Book appointment</a>
         </div>
+        <div class="stats">
+          <div class="panel stat"><strong id="stat-upcoming">—</strong><span>Upcoming visits</span></div>
+          <div class="panel stat"><strong id="stat-completed">—</strong><span>Completed visits</span></div>
+          <div class="panel stat"><strong id="stat-total">—</strong><span>Total appointments</span></div>
         </div>
-        </li>
-        </ul>
-        </nav>
+        <div class="panel appointments-panel">
+          <div class="panel-title">
+            <h2>Your appointments</h2>
+          </div>
+          <div id="appointment-list" class="appointment-list">
+            <div class="loading-state">Loading appointments…</div>
+          </div>
         </div>
-    </header>
+      </section>
+    </main>
 
-    <!-- navigation bar ending -->
-
-    <div id="user-details-container">
-
-    </div>
-
-
-    <!-- footer section starts -->
-    <footer class="text-slate-500">
-        <!-- Main footer -->
-        <div class="pt-16 pb-12 text-sm border-t border-slate-200 bg-slate-100">
-            <div class="container px-6 mx-auto">
-                <div class="grid grid-cols-4 gap-6 md:grid-cols-8 lg:grid-cols-12">
-                    <div class="col-span-4 md:col-span-8 lg:col-span-4" aria-labelledby="footer-header">
-                        <a id="WindUI-5-logo" aria-label="WindUI logo" aria-current="page"
-                            class="flex items-center gap-2 mb-6 text-base font-medium leading-6 whitespace-nowrap focus:outline-none text-slate-700"
-                            href="javascript:void(0)">
-                            <img src="./assets/mainlogo.svg" class="w-12" alt="">
-                            Wellness Oasis
-                        </a>
-                        <p>copyright &copy; Wellness Clinic . All Rights Reserved</p>
-                    </div>
-                    <nav class="col-span-2 md:col-span-4 lg:col-span-2" aria-labelledby="footer-product-5-logo">
-                        <h3 class="mb-6 text-base font-medium text-slate-700" id="footer-product-5-logo">Product</h3>
-                        <ul>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Features </a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Customers </a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Why us? </a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Pricing </a>
-                            </li>
-                        </ul>
-                    </nav>
-                    <nav class="col-span-2 md:col-span-4 lg:col-span-2" aria-labelledby="footer-docs-5-logo">
-                        <h3 class="mb-6 text-base font-medium text-slate-700" id="footer-docs-5-logo">Docs & Help</h3>
-                        <ul>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Documentation</a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Training </a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    System status </a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    FAQ's </a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Help Center </a>
-                            </li>
-                        </ul>
-                    </nav>
-                    <nav class="col-span-2 md:col-span-4 lg:col-span-2" aria-labelledby="footer-about-5-logo">
-                        <h3 class="mb-6 text-base font-medium text-slate-700" id="footer-about-5-logo">About us</h3>
-                        <ul>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    About us </a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Careers </a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Leadership </a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Blog</a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Events </a>
-                            </li>
-                        </ul>
-                    </nav>
-                    <nav class="col-span-2 md:col-span-4 lg:col-span-2" aria-labelledby="footer-get-in-touch-5-logo">
-                        <h3 class="mb-6 text-base font-medium text-slate-700" id="footer-get-in-touch-5-logo">Get in
-                            touch</h3>
-                        <ul>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Contact </a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Support </a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Partners </a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Join research </a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
+    <div id="profile-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="profile-title">
+      <div class="modal-card">
+        <div class="modal-head">
+          <h2 id="profile-title">Update profile</h2>
+          <button class="icon-button" data-close-profile type="button" aria-label="Close">×</button>
+        </div>
+        <form id="profile-form" class="form-grid" onsubmit="updateProfile(event)">
+          <div class="form-row">
+            <div class="field">
+              <label for="profile-first-name">First name</label>
+              <input id="profile-first-name" name="first_name" required>
             </div>
-        </div>
-    </footer>
-
-    <script src="authentication.js"></script>
-    <script src="userinfo.js"></script>
-</body>
-
+            <div class="field">
+              <label for="profile-last-name">Last name</label>
+              <input id="profile-last-name" name="last_name" required>
+            </div>
+          </div>
+          <div class="field">
+            <label for="profile-email">Email</label>
+            <input id="profile-email" name="email" type="email" required>
+          </div>
+          <div class="field">
+            <label for="profile-mobile">Mobile number</label>
+            <input id="profile-mobile" name="mobile_no" type="tel">
+          </div>
+          <div data-form-message class="form-message" hidden role="alert"></div>
+          <button class="button button-primary" type="submit">Save changes</button>
+        </form>
+      </div>
+    </div>
+    <div data-site-footer></div>
+  </body>
 </html>

@@ -1,93 +1,72 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-
-<body>
-    <div class="flex flex-col items-center justify-center my-20">
-        <h2 class="text-4xl">Please <span class="text-[#42A9D0]">Register</span> </h2>
-
-        <div class="flex flex-row ">
-            <form id="signup-form" onsubmit="handleRegistration(event)"
-                class="flex flex-col items-start justify-center my-20">
-                <label class="ml-2 mb-1 text-sm">User Name</label>
-                <input id="username"
-                    class=" mb-3 w-[400px] h-8 bg-gray-100 rounded-full focus:border-[#42A9D0] border focus:outline-none px-3"
-                    type="text">
-                <label class="ml-2 mb-1 text-sm">First Name</label>
-                <input id="first_name"
-                    class=" mb-3 w-[400px] h-8 bg-gray-100 rounded-full focus:border-[#42A9D0] border focus:outline-none px-3"
-                    type="text">
-                <label class="ml-2 mb-1 text-sm">Last Name</label>
-                <input id="last_name"
-                    class=" mb-3 w-[400px] h-8 bg-gray-100 rounded-full focus:border-[#42A9D0] border focus:outline-none px-3"
-                    type="text">
-                <label class="ml-2 mb-1 text-sm">Email</label>
-                <input id="email"
-                    class=" mb-3 w-[400px] h-8 bg-gray-100 rounded-full focus:border-[#42A9D0] border focus:outline-none px-3"
-                    type="text">
-                <label class="ml-2 mb-1 text-sm">Password</label>
-                <input id="password"
-                    class=" mb-3 w-[400px] h-8 bg-gray-100 rounded-full focus:border-[#42A9D0] border focus:outline-none px-3"
-                    type="password">
-                <label class="ml-2 mb-1 text-sm">Confirm Password</label>
-                <input id="confirm_password"
-                    class=" mb-3 w-[400px] h-8 bg-gray-100 rounded-full focus:border-[#42A9D0] border focus:outline-none px-3"
-                    type="password">
-                <p class="text-xs absolute bottom-[60px] right-2">Already have an account? please <a href="./login.html"
-                        class="underline hover:text-[#42A9D0]">login</a></p>
-                <input type="submit" class="bg-[#42A9D0] w-20 mx-auto rounded text-white px-[4px] py-[2px] mt-10">
-            </form>
-            <img class="w-[500px] h-[500px] my-16" src="./assets/signup.png" alt="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Create your Wellness Oasis Clinic patient account.">
+    <title>Create account | Wellness Oasis Clinic</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="api.js" defer></script>
+    <script src="ui.js" defer></script>
+    <script src="authentication.js" defer></script>
+  </head>
+  <body>
+    <main class="auth-page">
+      <section class="auth-panel">
+        <div class="auth-card">
+          <a class="brand" href="index.html">
+            <span class="brand-mark"><img src="assets/mainlogo.svg" alt=""></span>
+            <span>Wellness <strong>Oasis</strong></span>
+          </a>
+          <span class="eyebrow">Join Wellness Oasis</span>
+          <h1>Create your patient account</h1>
+          <p>Your secure place for appointments and profile details.</p>
+          <form class="form-grid" onsubmit="handleRegistration(event)" data-auth-form>
+            <div class="form-row">
+              <div class="field">
+                <label for="first_name">First name</label>
+                <input id="first_name" name="first_name" autocomplete="given-name" required>
+              </div>
+              <div class="field">
+                <label for="last_name">Last name</label>
+                <input id="last_name" name="last_name" autocomplete="family-name" required>
+              </div>
+            </div>
+            <div class="field">
+              <label for="username">Username</label>
+              <input id="username" name="username" autocomplete="username" required>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" autocomplete="email" required>
+              </div>
+              <div class="field">
+                <label for="mobile_no">Mobile number</label>
+                <input id="mobile_no" name="mobile_no" type="tel" autocomplete="tel">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" autocomplete="new-password" minlength="8" required>
+              </div>
+              <div class="field">
+                <label for="confirm_password">Confirm password</label>
+                <input id="confirm_password" name="confirm_password" type="password" autocomplete="new-password" minlength="8" required>
+              </div>
+            </div>
+            <small class="form-help">Use at least 8 characters and avoid common or personal phrases.</small>
+            <div data-form-message class="form-message" hidden role="alert"></div>
+            <button class="button button-primary button-block" type="submit">Create my account</button>
+          </form>
+          <p class="form-footer">Already registered? <a href="login.html">Sign in</a></p>
         </div>
-    </div>
-</body>
-<script src="./authentication.js"></script>
-
+      </section>
+      <aside class="auth-visual" aria-hidden="true">
+        <img src="assets/signup.png" alt="">
+        <div class="auth-quote">Your care details stay connected, so each visit starts with better context.</div>
+      </aside>
+    </main>
+  </body>
 </html>
-<!-- <!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Signup Page</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-
-<body>
-  <div class="flex flex-col items-center justify-center my-20">
-    <h2 class="text-4xl">Please <span class="text-[#42A9D0]">Register</span> </h2>
-
-    <div class="flex flex-row items-start gap-10">
-      <form id="signup-form" onsubmit="handleRegistration(event)" class="flex flex-col items-start justify-center my-20">
-        <label class="ml-2 mb-1 text-sm">Username</label>
-        <input id="username" class="mb-3 w-[400px] h-8 bg-gray-100 rounded-full focus:border-[#42A9D0] border focus:outline-none px-3" type="text" required>
-        <label class="ml-2 mb-1 text-sm">First Name</label>
-        <input id="first_name" class="mb-3 w-[400px] h-8 bg-gray-100 rounded-full focus:border-[#42A9D0] border focus:outline-none px-3" type="text" required>
-        <label class="ml-2 mb-1 text-sm">Last Name</label>
-        <input id="last_name" class="mb-3 w-[400px] h-8 bg-gray-100 rounded-full focus:border-[#42A9D0] border focus:outline-none px-3" type="text" required>
-        <label class="ml-2 mb-1 text-sm">Email</label>
-        <input id="email" class="mb-3 w-[400px] h-8 bg-gray-100 rounded-full focus:border-[#42A9D0] border focus:outline-none px-3" type="email" required>
-        <label class="ml-2 mb-1 text-sm">Password</label>
-        <input id="password" class="mb-3 w-[400px] h-8 bg-gray-100 rounded-full focus:border-[#42A9D0] border focus:outline-none px-3" type="password" required>
-        <label class="ml-2 mb-1 text-sm">Confirm Password</label>
-        <input id="confirm_password" class="mb-3 w-[400px] h-8 bg-gray-100 rounded-full focus:border-[#42A9D0] border focus:outline-none px-3" type="password" required>
-
-        <div id="error" class="text-red-500 text-xs mb-2"></div>
-
-        <p class="text-xs absolute bottom-[60px] right-2">Already have an account? Please <a href="./login.html" class="underline hover:text-[#42A9D0]">login</a></p>
-        <button type="submit" class="bg-[#42A9D0] w-20 mx-auto rounded text-white px-[4px] py-[2px] mt-10">Signup</button>
-      </form>
-      <img class="w-[500px] h-[500px] my-16" src="./assets/signup.png" alt="">
-    </div>
-  </div>
-  <script src="./authentication.js"></script>
-</body>
-
-</html> -->

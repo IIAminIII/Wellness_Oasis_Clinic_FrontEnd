@@ -1,250 +1,61 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doctor Detail</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
-</head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="View a Wellness Oasis doctor profile and book an appointment.">
+    <title>Doctor profile | Wellness Oasis Clinic</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="api.js" defer></script>
+    <script src="ui.js" defer></script>
+    <script src="docdetails.js" defer></script>
+  </head>
+  <body>
+    <div data-site-header></div>
+    <main>
+      <section id="doctor-detail" class="container detail-grid">
+        <div class="loading-state">Loading doctor profile…</div>
+      </section>
+    </main>
 
-<body>
-    <!-- navigation bar starting -->
-    <header
-        class="relative z-20 w-full  bg-white/90 shadow-slate-700/5 after:absolute after:top-full after:left-0 after:z-10 after:block after:h-px after:w-full after:bg-slate-200 lg:border-slate-200 lg:backdrop-blur-sm lg:after:hidden">
-        <div class="relative mx-auto max-w-full px-6 lg:max-w-5xl xl:max-w-7xl 2xl:max-w-[96rem]">
-            <nav aria-label="main navigation"
-                class="flex h-[5.5rem] items-stretch justify-between font-medium text-slate-700" role="navigation">
-                <!-- Brand logo -->
-                <a id="WindUI" aria-label="WindUI logo" aria-current="page"
-                    class="flex items-center gap-2 py-3 text-lg whitespace-nowrap focus:outline-none lg:flex-1"
-                    href="./index.html">
-                    <image class="w-16" src="./assets/mainlogo.svg" alt="Main Logo" />
-                    <h3 class="text-[#42A9D0]">Wellness Oasis</h3>
-                </a>
-                <!-- Mobile trigger -->
-                <button class="relative self-center order-10 visible block w-10 h-10 opacity-100 lg:hidden"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <div class="absolute w-6 transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
-                        <span aria-hidden="true"
-                            class="absolute block h-0.5 w-9/12 -translate-y-2 transform rounded-full bg-slate-900 transition-all duration-300"></span>
-                        <span aria-hidden="true"
-                            class="absolute block h-0.5 w-6 transform rounded-full bg-slate-900 transition duration-300"></span>
-                        <span aria-hidden="true"
-                            class="absolute block h-0.5 w-1/2 origin-top-left translate-y-2 transform rounded-full bg-slate-900 transition-all duration-300"></span>
-                    </div>
-                </button>
-                <!-- Navigation links -->
-                <ul role="menubar" aria-label="Select page"
-                    class="invisible absolute top-0 left-0 z-[-1] ml-auto h-screen w-full justify-center overflow-hidden overflow-y-auto overscroll-contain bg-white/90 px-8 pb-12 pt-28 font-medium opacity-0 transition-[opacity,visibility] duration-300 lg:visible lg:relative lg:top-0 lg:z-0 lg:flex lg:h-full lg:w-auto lg:items-stretch lg:overflow-visible lg:bg-white/0 lg:px-0 lg:py-0 lg:pt-0 lg:opacity-100">
-                    <li role="none" class="flex items-stretch">
-                        <a role="menuitem" aria-haspopup="false"
-                            class="flex items-center gap-2 py-4 transition-colors duration-300 hover:text-cyan-500 focus:text-cyan-600 focus:outline-none focus-visible:outline-none lg:px-4"
-                            href="javascript:void(0)"> <span class="border-b-2 border-b-[#42A9D0]">Home</span></a>
-                    </li>
-                    <li role="none" class="flex items-stretch">
-                        <a role="menuitem" aria-current="page" aria-haspopup="false"
-                            class="flex items-center gap-2 py-4 transition-colors duration-300  hover:text-cyan-600 focus:text-cyan-600 focus:outline-none focus-visible:outline-none lg:px-4"
-                            href="javascript:void(0)"> <span class="border-b-2 border-b-[#42A9D0]">Service</span> </a>
-                    </li>
-                    <li role="none" class="flex items-stretch">
-                        <a role="menuitem" aria-haspopup="false"
-                            class="flex items-center gap-2 py-4 transition-colors duration-300 hover:text-cyan-500 focus:text-cyan-600 focus:outline-none focus-visible:outline-none lg:px-4"
-                            href="javascript:void(0)"> <span class="border-b-2 border-b-[#42A9D0]">Contact Us</span>
-                        </a>
-                    </li>
-                    <li role="none" id="LoginOrLogout" class="flex items-stretch">
-
-                    </li>
-                </ul>
-            </nav>
+    <div id="booking-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="booking-title">
+      <div class="modal-card">
+        <div class="modal-head">
+          <div>
+            <span class="eyebrow">Reserve your visit</span>
+            <h2 id="booking-title">Book appointment</h2>
+          </div>
+          <button class="icon-button" data-close-booking type="button" aria-label="Close">×</button>
         </div>
-    </header>
-
-    <!-- navigation bar ending -->
-
-    <!-- doctor details components starts -->
-    <div id="doc-details">
-
-    </div>
-    <!-- doctor details components ends -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Submit Your Info</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="radio" name="status" value="Offline" /> Offline
-                    <input type="radio" name="status" value="Online" /> Online<br />
-
-                    <input id="symptom" type="text" placeholder="Type Your symptom" />
-                    <br />
-
-                    <select id="time-container" class="p-2 mt-2" id="time" name="time">
-                    </select>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        Close
-                    </button>
-                    <button onclick="handleAppointment()" type="button" class="btn bg-[#42A9D0] hover:bg-cyan-500 text-white">
-                        Take Appointment
-                    </button>
-                </div>
+        <form class="form-grid" onsubmit="handleAppointment(event)">
+          <div class="form-row">
+            <div class="field">
+              <label for="appointment-type">Visit type</label>
+              <select id="appointment-type" name="appointment_type" required>
+                <option value="Offline">In person</option>
+                <option value="Online">Online</option>
+              </select>
             </div>
-        </div>
-    </div>
-
-
-    <!-- review components starts -->
-    <div id="doc-details-review" class="max-w-7xl mx-auto flex flex-row overflow-x-auto gap-3 my-10 ">
-
-    </div>
-    <!-- review components ends -->
-
-
-
-
-    <!-- footer section starts -->
-    <footer class="text-slate-500">
-        <!-- Main footer -->
-        <div class="pt-16 pb-12 text-sm border-t border-slate-200 bg-slate-100">
-            <div class="container px-6 mx-auto">
-                <div class="grid grid-cols-4 gap-6 md:grid-cols-8 lg:grid-cols-12">
-                    <div class="col-span-4 md:col-span-8 lg:col-span-4" aria-labelledby="footer-header">
-                        <a id="WindUI-5-logo" aria-label="WindUI logo" aria-current="page"
-                            class="flex items-center gap-2 mb-6 text-base font-medium leading-6 whitespace-nowrap focus:outline-none text-slate-700"
-                            href="javascript:void(0)">
-                            <img src="./assets/mainlogo.svg" class="w-12" alt="">
-                            Wellness Oasis
-                        </a>
-                        <p>copyright &copy; Wellness Clinic . All Rights Reserved</p>
-                    </div>
-                    <nav class="col-span-2 md:col-span-4 lg:col-span-2" aria-labelledby="footer-product-5-logo">
-                        <h3 class="mb-6 text-base font-medium text-slate-700" id="footer-product-5-logo">Product</h3>
-                        <ul>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Features </a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Customers </a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Why us? </a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Pricing </a>
-                            </li>
-                        </ul>
-                    </nav>
-                    <nav class="col-span-2 md:col-span-4 lg:col-span-2" aria-labelledby="footer-docs-5-logo">
-                        <h3 class="mb-6 text-base font-medium text-slate-700" id="footer-docs-5-logo">Docs & Help</h3>
-                        <ul>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Documentation</a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Training </a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    System status </a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    FAQ's </a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Help Center </a>
-                            </li>
-                        </ul>
-                    </nav>
-                    <nav class="col-span-2 md:col-span-4 lg:col-span-2" aria-labelledby="footer-about-5-logo">
-                        <h3 class="mb-6 text-base font-medium text-slate-700" id="footer-about-5-logo">About us</h3>
-                        <ul>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    About us </a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Careers </a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Leadership </a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Blog</a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Events </a>
-                            </li>
-                        </ul>
-                    </nav>
-                    <nav class="col-span-2 md:col-span-4 lg:col-span-2" aria-labelledby="footer-get-in-touch-5-logo">
-                        <h3 class="mb-6 text-base font-medium text-slate-700" id="footer-get-in-touch-5-logo">Get in
-                            touch</h3>
-                        <ul>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Contact </a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Support </a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Partners </a>
-                            </li>
-                            <li class="mb-2 leading-6">
-                                <a href="javascript:void(0)"
-                                    class="transition-colors duration-300 hover:text-[#42A9D0] focus:text-[#42A9D0]">
-                                    Join research </a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
+            <div class="field">
+              <label for="appointment-date">Date</label>
+              <input id="appointment-date" name="scheduled_date" type="date" required>
             </div>
-        </div>
-    </footer>
-
-    <script src="/app.js"></script>
-    <script src="/docdetails.js"></script>
-    <script src="./authentication.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
-        integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
-        crossorigin="anonymous"></script>
-</body>
-
+          </div>
+          <div class="field">
+            <label for="appointment-time">Available time</label>
+            <select id="appointment-time" name="time" required>
+              <option value="">Choose an available time</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="symptoms">How can the doctor help?</label>
+            <textarea id="symptoms" name="symptoms" maxlength="2000" placeholder="Briefly describe symptoms or the reason for your visit" required></textarea>
+          </div>
+          <div data-form-message class="form-message" hidden role="alert"></div>
+          <button class="button button-primary button-block" type="submit">Confirm appointment</button>
+        </form>
+      </div>
+    </div>
+    <div data-site-footer></div>
+  </body>
 </html>

@@ -1,24 +1,153 @@
-const loadUserDetails = () => {
-    const user_id = localStorage.getItem('user_id');
-    fetch(`https://wellness-oasis-clinic-api.onrender.com/patients/list/${user_id}`)
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-            const parent = document.getElementById("user-details-container");
-            const div = document.createElement("user-all");
-            div.classList.add("user-all");
-            div.innerHTML = `
-            <div class="user-img">
-            <img src="./Images/man-1.jpg" alt="" />
-          </div>
-          <div class="user-info">
-            <h1>${data.username}</h1>
-            <h3>${data.first_name + data.last_name}</h3>
-            <h3>${data.email}</h3>
-          </div>
-            `;
-            parent.appendChild(div);
-        });
-};
+let portalAppointments = [];
 
-loadUserDetails();
+function appointmentItem(appointment) {
+  const doctor = appointment.doctor_detail;
+  const canCancel = !appointment.cancel && !["Completed", "Cancelled"].includes(
+    appointment.appointment_status
+  );
+  return `
+    <article class="appointment-item">
+      <div class="appointment-doctor">
+        <strong>Dr. ${escapeHTML(doctor?.full_name || "Clinic doctor")}</strong>
+        <span>${escapeHTML(
+          doctor?.specialization?.[0]?.name || appointment.appointment_type
+        )}</span>
+      </div>
+      <div class="appointment-date">
+        <strong>${escapeHTML(formatDate(appointment.scheduled_date))}</strong>
+        <small>${escapeHTML(appointment.time_detail?.name || "")} · ${escapeHTML(
+          appointment.appointment_type
+        )}</small>
+      </div>
+      <div>
+        <span class="status ${escapeHTML(appointment.appointment_status)}">${escapeHTML(
+          appointment.appointment_status
+        )}</span>
+        ${
+          canCancel
+            ? `<button class="button button-danger button-small" data-cancel="${appointment.id}" type="button">Cancel</button>`
+            : ""
+        }
+      </div>
+    </article>`;
+}
+
+function renderProfile(user) {
+  document.querySelector("#profile-card").innerHTML = `
+    <span class="avatar profile-avatar">${escapeHTML(initials(user.full_name))}</span>
+    <h2>${escapeHTML(user.full_name || user.username)}</h2>
+    <p>${escapeHTML(user.email)}</p>
+    <p>${escapeHTML(user.mobile_no || "No mobile number added")}</p>
+    <button class="button button-secondary button-block" data-edit-profile type="button">Edit profile</button>`;
+  document.querySelector("#welcome-name").textContent =
+    user.first_name || user.username;
+  document
+    .querySelector("[data-edit-profile]")
+    ?.addEventListener("click", openProfileModal);
+}
+
+function renderAppointments() {
+  const target = document.querySelector("#appointment-list");
+  target.innerHTML = portalAppointments.map(appointmentItem).join("");
+  if (!portalAppointments.length) {
+    target.innerHTML = `
+      <div class="empty-state">
+        <h3>No appointments yet</h3>
+        <p>Find a doctor and choose a time that works for you.</p>
+        <a class="button button-primary button-small" href="index.html#doctors">Find a doctor</a>
+      </div>`;
+  }
+  target.querySelectorAll("[data-cancel]").forEach((button) => {
+    button.addEventListener("click", () => cancelAppointment(button.dataset.cancel));
+  });
+
+  const active = portalAppointments.filter(
+    (item) => !item.cancel && !["Completed", "Cancelled"].includes(item.appointment_status)
+  ).length;
+  const completed = portalAppointments.filter(
+    (item) => item.appointment_status === "Completed"
+  ).length;
+  document.querySelector("#stat-upcoming").textContent = active;
+  document.querySelector("#stat-completed").textContent = completed;
+  document.querySelector("#stat-total").textContent = portalAppointments.length;
+}
+
+async function loadPortal() {
+  if (!requireAuthentication()) return;
+  try {
+    const [profileResponse, appointmentsResponse] = await Promise.all([
+      apiRequest("/patients/me/"),
+      apiRequest("/appointments/list/?page_size=100"),
+    ]);
+    authStore.setUser(profileResponse.user);
+    renderProfile(profileResponse.user);
+    portalAppointments = listOf(appointmentsResponse);
+    renderAppointments();
+  } catch (error) {
+    document.querySelector("#appointment-list").innerHTML =
+      `<div class="error-state">${escapeHTML(error.message)}</div>`;
+  }
+}
+
+async function cancelAppointment(id) {
+  if (!window.confirm("Cancel this appointment? The slot will become available again.")) {
+    return;
+  }
+  try {
+    await apiRequest(`/appointments/list/${id}/cancel/`, { method: "POST" });
+    toast("Appointment cancelled.");
+    await loadPortal();
+  } catch (error) {
+    toast(error.message, "error");
+  }
+}
+
+function openProfileModal() {
+  const user = authStore.user;
+  const form = document.querySelector("#profile-form");
+  form.elements.first_name.value = user.first_name || "";
+  form.elements.last_name.value = user.last_name || "";
+  form.elements.email.value = user.email || "";
+  form.elements.mobile_no.value = user.mobile_no || "";
+  document.querySelector("#profile-modal").classList.add("is-open");
+}
+
+function closeProfileModal() {
+  document.querySelector("#profile-modal").classList.remove("is-open");
+}
+
+async function updateProfile(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const button = form.querySelector('[type="submit"]');
+  const message = form.querySelector("[data-form-message]");
+  message.hidden = true;
+  setLoading(button, true, "Saving…");
+  try {
+    const response = await apiRequest("/patients/me/", {
+      method: "PATCH",
+      body: JSON.stringify({
+        first_name: form.elements.first_name.value.trim(),
+        last_name: form.elements.last_name.value.trim(),
+        email: form.elements.email.value.trim(),
+        mobile_no: form.elements.mobile_no.value.trim(),
+      }),
+    });
+    authStore.setUser(response.user);
+    renderProfile(response.user);
+    closeProfileModal();
+    toast("Profile updated.");
+  } catch (error) {
+    showMessage(message, error.message);
+  } finally {
+    setLoading(button, false);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("welcome") === "1") toast("Welcome to Wellness Oasis.");
+  if (params.get("booked") === "1") toast("Your appointment is confirmed.");
+  loadPortal();
+  document.querySelector("[data-close-profile]")?.addEventListener("click", closeProfileModal);
+});
