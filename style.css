@@ -490,18 +490,37 @@ p {
   flex: 1 1 320px;
 }
 
-.search-box input {
-  padding-left: 45px;
-}
-
 .search-box::before {
   position: absolute;
+  z-index: 1;
   top: 50%;
-  left: 17px;
-  color: var(--muted);
-  content: "⌕";
-  font-size: 1.3rem;
-  transform: translateY(-52%);
+  left: 16px;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--muted);
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+  transform: translateY(-60%);
+}
+
+.search-box::after {
+  position: absolute;
+  z-index: 1;
+  top: calc(50% + 5px);
+  left: 29px;
+  width: 7px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--muted);
+  content: "";
+  pointer-events: none;
+  transform: rotate(45deg);
+  transform-origin: left center;
+}
+
+.toolbar .search-box input {
+  padding-left: 46px;
 }
 
 .doctor-card {
