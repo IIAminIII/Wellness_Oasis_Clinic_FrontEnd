@@ -16,6 +16,8 @@ function renderShell() {
   const header = document.querySelector("[data-site-header]");
   const footer = document.querySelector("[data-site-footer]");
   const user = authStore.user;
+  const portalPath = portalPathFor(user);
+  const portalLabel = hasOperationsAccess(user) ? "Operations" : "My portal";
 
   if (header) {
     header.innerHTML = `
@@ -35,11 +37,11 @@ function renderShell() {
             <a href="contactus.html">Contact</a>
             ${
               authStore.isAuthenticated
-                ? `<a class="nav-user" href="userDetail.html">
+                ? `<a class="nav-user" href="${portalPath}">
                     <span class="avatar avatar-small">${escapeHTML(
                       initials(user?.full_name || user?.username)
                     )}</span>
-                    ${escapeHTML(user?.first_name || "My portal")}
+                    ${escapeHTML(user?.first_name || portalLabel)}
                   </a>
                   <button class="button button-ghost button-small" data-logout type="button">Sign out</button>`
                 : `<a href="login.html">Sign in</a>
@@ -77,8 +79,8 @@ function renderShell() {
           </div>
           <div>
             <h3>Portal</h3>
-            <a href="userDetail.html">Appointments</a>
-            <a href="userDetail.html">My profile</a>
+            <a href="${portalPath}">${escapeHTML(portalLabel)}</a>
+            <a href="${portalPath}">Appointments</a>
             <a href="login.html">Secure sign in</a>
           </div>
           <div>

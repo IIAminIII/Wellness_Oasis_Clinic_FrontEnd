@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Role-aware hospital operations workspace for Wellness Oasis care teams.">
+    <title>Operations workspace | Wellness Oasis Clinic</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="api.js" defer></script>
+    <script src="ui.js" defer></script>
+    <script src="staff.js" defer></script>
+  </head>
+  <body class="operations-page">
+    <div data-site-header></div>
+    <main class="container operations-shell">
+      <aside class="panel operations-sidebar">
+        <div id="operations-identity" class="operations-identity">
+          <div class="loading-state">Loading workspace…</div>
+        </div>
+        <nav class="operations-nav" aria-label="Operations sections">
+          <a href="#overview" class="is-active">Overview</a>
+          <a href="#appointments">Appointments</a>
+          <a href="index.html#doctors">Clinician directory</a>
+        </nav>
+        <div class="operations-security">
+          <strong>Protected workspace</strong>
+          <p>Access is limited by your active hospital role and facility.</p>
+        </div>
+      </aside>
+
+      <section class="operations-main">
+        <header class="operations-header" id="overview">
+          <div>
+            <span class="eyebrow">Hospital operations</span>
+            <h1>Care team workspace</h1>
+            <p id="operations-context">Loading your operational scope…</p>
+          </div>
+          <button class="button button-secondary button-small" id="refresh-operations" type="button">
+            Refresh
+          </button>
+        </header>
+
+        <div class="operations-stats" aria-label="Appointment overview">
+          <article class="panel operations-stat">
+            <span>Today</span>
+            <strong id="ops-stat-today">—</strong>
+            <small>Scheduled visits</small>
+          </article>
+          <article class="panel operations-stat">
+            <span>Upcoming</span>
+            <strong id="ops-stat-upcoming">—</strong>
+            <small>Active bookings</small>
+          </article>
+          <article class="panel operations-stat operations-stat-warn">
+            <span>Pending</span>
+            <strong id="ops-stat-pending">—</strong>
+            <small>Need review</small>
+          </article>
+          <article class="panel operations-stat">
+            <span>Confirmed</span>
+            <strong id="ops-stat-confirmed">—</strong>
+            <small>Ready for care</small>
+          </article>
+          <article class="panel operations-stat">
+            <span>Completed</span>
+            <strong id="ops-stat-completed">—</strong>
+            <small>Closed visits</small>
+          </article>
+        </div>
+
+        <section class="panel operations-queue" id="appointments">
+          <div class="operations-queue-head">
+            <div>
+              <span class="eyebrow">Live queue</span>
+              <h2>Upcoming appointments</h2>
+            </div>
+            <div class="status-filter" role="group" aria-label="Filter appointments">
+              <button class="is-active" type="button" data-status-filter="all">All</button>
+              <button type="button" data-status-filter="Pending">Pending</button>
+              <button type="button" data-status-filter="Confirmed">Confirmed</button>
+              <button type="button" data-status-filter="Running">Running</button>
+            </div>
+          </div>
+          <div id="operations-appointments" class="operations-appointment-list">
+            <div class="loading-state">Loading appointment queue…</div>
+          </div>
+        </section>
+      </section>
+    </main>
+    <div data-site-footer></div>
+  </body>
+</html>

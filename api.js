@@ -6,6 +6,15 @@ const API_BASE_URL =
 
 const AUTH_TOKEN_KEY = "wellness_auth_token";
 const USER_KEY = "wellness_user";
+const OPERATIONS_ROLES = new Set([
+  "doctor",
+  "nurse",
+  "receptionist",
+  "billing",
+  "lab_technician",
+  "pharmacist",
+  "administrator",
+]);
 
 const authStore = {
   get token() {
@@ -40,6 +49,20 @@ const authStore = {
 function listOf(payload) {
   if (Array.isArray(payload)) return payload;
   return Array.isArray(payload?.results) ? payload.results : [];
+}
+
+function roleValues(user = authStore.user) {
+  return (user?.roles || []).map((role) =>
+    typeof role === "string" ? role : role.role
+  );
+}
+
+function hasOperationsAccess(user = authStore.user) {
+  return roleValues(user).some((role) => OPERATIONS_ROLES.has(role));
+}
+
+function portalPathFor(user = authStore.user) {
+  return hasOperationsAccess(user) ? "staff.html" : "userDetail.html";
 }
 
 function firstError(value) {

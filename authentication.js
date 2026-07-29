@@ -65,7 +65,7 @@ async function handleLogin(event) {
     authStore.setSession(data.token, data.user);
     const returnTo = sessionStorage.getItem("wellness_return_to");
     sessionStorage.removeItem("wellness_return_to");
-    window.location.href = returnTo || "userDetail.html";
+    window.location.href = returnTo || portalPathFor(data.user);
   } catch (error) {
     showMessage(message, error.message);
   } finally {

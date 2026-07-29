@@ -1,7 +1,8 @@
 # Wellness Oasis Clinic frontend
 
-Responsive, framework-free patient experience for clinic discovery,
-authentication, appointment booking, profile management, and contact requests.
+Responsive, framework-free patient and care-team experience for clinic
+discovery, authentication, appointment booking, profile management, hospital
+operations, and contact requests.
 
 ## Run locally
 
@@ -25,8 +26,9 @@ elsewhere. A deployment can override this before `api.js` loads:
 - `index.html` — services and doctor discovery
 - `services.html` — service catalogue
 - `docdetails.html` — doctor profile and appointment booking
-- `login.html` / `signup.html` — patient authentication
+- `login.html` / `signup.html` — role-aware authentication and patient signup
 - `userDetail.html` — private patient portal
+- `staff.html` — role-scoped hospital operations workspace
 - `contactus.html` — care-desk request
 
 All user-provided API content is escaped before being inserted into the page.

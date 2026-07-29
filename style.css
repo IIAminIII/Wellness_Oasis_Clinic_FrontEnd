@@ -1167,6 +1167,289 @@ p {
   padding: 32px;
 }
 
+.operations-page {
+  background:
+    radial-gradient(circle at 8% 5%, rgba(8, 127, 115, 0.09), transparent 28%),
+    var(--surface);
+}
+
+.operations-shell {
+  display: grid;
+  align-items: start;
+  gap: 28px;
+  padding: 32px 0 90px;
+  grid-template-columns: 275px minmax(0, 1fr);
+}
+
+.operations-sidebar {
+  position: sticky;
+  top: 92px;
+  overflow: hidden;
+}
+
+.operations-identity {
+  display: grid;
+  gap: 14px;
+  padding: 26px;
+  border-bottom: 1px solid var(--line);
+}
+
+.operations-avatar {
+  width: 58px;
+  height: 58px;
+  font-size: 1.05rem;
+}
+
+.operations-identity h2 {
+  margin: 8px 0 3px;
+  font-size: 1.15rem;
+}
+
+.operations-identity p {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.role-badge {
+  display: inline-flex;
+  padding: 5px 9px;
+  border-radius: 999px;
+  color: var(--primary-dark);
+  background: var(--primary-soft);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.operations-nav {
+  display: grid;
+  gap: 5px;
+  padding: 16px;
+}
+
+.operations-nav a {
+  padding: 11px 12px;
+  border-radius: 10px;
+  color: #42605d;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.operations-nav a:hover,
+.operations-nav a.is-active {
+  color: var(--primary-dark);
+  background: var(--primary-soft);
+}
+
+.operations-security {
+  margin: 0 16px 16px;
+  padding: 15px;
+  border: 1px solid #c8e4df;
+  border-radius: 12px;
+  background: #f2fbf9;
+}
+
+.operations-security strong {
+  color: var(--primary-dark);
+  font-size: 0.78rem;
+}
+
+.operations-security p {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.73rem;
+}
+
+.operations-main {
+  min-width: 0;
+}
+
+.operations-header,
+.operations-queue-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.operations-header {
+  margin-bottom: 24px;
+}
+
+.operations-header h1 {
+  margin: 6px 0;
+  font-size: clamp(2rem, 3.5vw, 3rem);
+}
+
+.operations-header p {
+  color: var(--muted);
+}
+
+.operations-stats {
+  display: grid;
+  gap: 13px;
+  margin-bottom: 20px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.operations-stat {
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+}
+
+.operations-stat::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 46px;
+  height: 46px;
+  border-radius: 0 0 0 46px;
+  background: var(--primary-soft);
+  content: "";
+}
+
+.operations-stat-warn::after {
+  background: #fff1d6;
+}
+
+.operations-stat span,
+.operations-stat small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.operations-stat strong {
+  display: block;
+  margin: 9px 0 5px;
+  color: var(--ink);
+  font-size: 1.75rem;
+}
+
+.operations-queue {
+  padding: 26px;
+}
+
+.operations-queue-head {
+  margin-bottom: 20px;
+}
+
+.operations-queue-head h2 {
+  margin-top: 4px;
+}
+
+.status-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: #f7faf9;
+}
+
+.status-filter button {
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 8px;
+  color: var(--muted);
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.status-filter button:hover,
+.status-filter button.is-active {
+  color: var(--primary-dark);
+  background: white;
+  box-shadow: 0 1px 3px rgba(14, 48, 44, 0.11);
+}
+
+.operations-appointment-list {
+  display: grid;
+  gap: 10px;
+}
+
+.operations-appointment {
+  display: grid;
+  align-items: center;
+  gap: 18px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: white;
+  grid-template-columns: 155px minmax(170px, 1.2fr) minmax(160px, 1fr) auto;
+}
+
+.operations-time strong,
+.operations-time span,
+.operations-person strong,
+.operations-person span,
+.operations-clinician small,
+.operations-clinician strong {
+  display: block;
+}
+
+.operations-time span,
+.operations-person span,
+.operations-clinician small {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 0.74rem;
+}
+
+.operations-person {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.operations-person div,
+.operations-clinician {
+  min-width: 0;
+}
+
+.operations-person strong,
+.operations-person span,
+.operations-clinician strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.operations-status-actions {
+  display: grid;
+  justify-items: end;
+  gap: 8px;
+}
+
+.workflow-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.status.Pending {
+  color: #925f00;
+  background: #fff4d8;
+}
+
+.status.Confirmed {
+  color: #175cd3;
+  background: #eff8ff;
+}
+
+.status.Running {
+  color: #067647;
+  background: #ecfdf3;
+}
+
 .toast-region {
   position: fixed;
   z-index: 200;
@@ -1197,6 +1480,20 @@ p {
   from {
     opacity: 0;
     transform: translateY(-10px);
+  }
+}
+
+@media (max-width: 1100px) {
+  .operations-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .operations-appointment {
+    grid-template-columns: 140px 1fr auto;
+  }
+
+  .operations-clinician {
+    display: none;
   }
 }
 
@@ -1266,6 +1563,23 @@ p {
   .profile-panel {
     position: static;
   }
+
+  .operations-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .operations-sidebar {
+    position: static;
+  }
+
+  .operations-nav {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .operations-security {
+    display: none;
+  }
 }
 
 @media (max-width: 640px) {
@@ -1305,9 +1619,32 @@ p {
   .card-grid,
   .footer-grid,
   .stats,
+  .operations-stats,
   .form-row,
   .fact-grid {
     grid-template-columns: 1fr;
+  }
+
+  .operations-header,
+  .operations-queue-head {
+    display: grid;
+  }
+
+  .operations-queue {
+    padding: 20px;
+  }
+
+  .operations-appointment {
+    align-items: start;
+    grid-template-columns: 1fr;
+  }
+
+  .operations-status-actions {
+    justify-items: start;
+  }
+
+  .workflow-actions {
+    justify-content: flex-start;
   }
 
   .cta {
