@@ -1,4 +1,5 @@
 let portalAppointments = [];
+let portalWaitlist = [];
 
 function appointmentItem(appointment) {
   const doctor = appointment.doctor_detail;
@@ -72,17 +73,90 @@ function renderAppointments() {
   document.querySelector("#stat-total").textContent = portalAppointments.length;
 }
 
+function waitlistItem(entry) {
+  const offered = entry.status === "Offered";
+  return `
+    <article class="appointment-item">
+      <div class="appointment-doctor">
+        <strong>Dr. ${escapeHTML(entry.doctor_detail?.full_name || "Clinic doctor")}</strong>
+        <span>${escapeHTML(
+          entry.doctor_detail?.specialization?.[0]?.name || "Waitlisted"
+        )}</span>
+      </div>
+      <div class="appointment-date">
+        <strong>${escapeHTML(formatDate(entry.requested_date))}</strong>
+        <small>${escapeHTML(entry.time_detail?.name || "")}</small>
+      </div>
+      <div>
+        <span class="status ${escapeHTML(entry.status)}">${escapeHTML(
+          entry.status
+        )}</span>
+        ${
+          offered
+            ? `<button class="button button-primary button-small" data-accept="${entry.id}" type="button">Accept place</button>`
+            : ""
+        }
+        <button class="button button-secondary button-small" data-leave="${entry.id}" type="button">
+          ${offered ? "Decline" : "Leave"}
+        </button>
+      </div>
+    </article>`;
+}
+
+function renderWaitlist() {
+  const panel = document.querySelector("#waitlist-panel");
+  const target = document.querySelector("#waitlist-list");
+  if (!panel || !target) return;
+
+  const open = portalWaitlist.filter((entry) =>
+    ["Waiting", "Offered"].includes(entry.status)
+  );
+  panel.hidden = open.length === 0;
+  target.innerHTML = open.map(waitlistItem).join("");
+
+  target.querySelectorAll("[data-accept]").forEach((button) => {
+    button.addEventListener("click", () => acceptWaitlistOffer(button.dataset.accept));
+  });
+  target.querySelectorAll("[data-leave]").forEach((button) => {
+    button.addEventListener("click", () => leaveWaitlist(button.dataset.leave));
+  });
+}
+
+async function acceptWaitlistOffer(id) {
+  try {
+    await apiRequest(`/appointments/waitlist/${id}/accept/`, { method: "POST" });
+    toast("The place is yours — the appointment is booked.");
+    await loadPortal();
+  } catch (error) {
+    toast(error.message);
+    await loadPortal();
+  }
+}
+
+async function leaveWaitlist(id) {
+  try {
+    await apiRequest(`/appointments/waitlist/${id}/leave/`, { method: "POST" });
+    await loadPortal();
+  } catch (error) {
+    toast(error.message);
+  }
+}
+
 async function loadPortal() {
   if (!requireAuthentication()) return;
   try {
-    const [profileResponse, appointmentsResponse] = await Promise.all([
-      apiRequest("/patients/me/"),
-      apiRequest("/appointments/list/?page_size=100"),
-    ]);
+    const [profileResponse, appointmentsResponse, waitlistResponse] =
+      await Promise.all([
+        apiRequest("/patients/me/"),
+        apiRequest("/appointments/list/?page_size=100"),
+        apiRequest("/appointments/waitlist/?page_size=100"),
+      ]);
     authStore.setUser(profileResponse.user);
     renderProfile(profileResponse.user);
     portalAppointments = listOf(appointmentsResponse);
+    portalWaitlist = listOf(waitlistResponse);
     renderAppointments();
+    renderWaitlist();
   } catch (error) {
     renderPortalFailure(error);
   }
@@ -170,6 +244,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   if (params.get("welcome") === "1") toast("Welcome to Wellness Oasis.");
   if (params.get("booked") === "1") toast("Your appointment is confirmed.");
+  if (params.get("waitlisted") === "1")
+    toast("You are on the waitlist. We will offer you a place if one frees up.");
   loadPortal();
   document.querySelector("[data-close-profile]")?.addEventListener("click", closeProfileModal);
 });

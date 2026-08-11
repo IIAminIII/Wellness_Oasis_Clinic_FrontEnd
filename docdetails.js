@@ -1,4 +1,7 @@
 let currentDoctor = null;
+// Slots returned for the currently selected date, including full ones so the
+// patient can be offered the waitlist rather than a dead end.
+let currentSlots = [];
 
 function doctorIdFromUrl() {
   return new URLSearchParams(window.location.search).get("doctorId");
@@ -57,22 +60,106 @@ async function loadDoctor() {
   try {
     currentDoctor = await apiRequest(`/doctors/list/${id}/`);
     renderDoctor(currentDoctor);
-    populateTimes(currentDoctor.available_time || []);
   } catch (error) {
     target.innerHTML = `<div class="error-state">${escapeHTML(error.message)}</div>`;
   }
 }
 
-function populateTimes(times) {
+async function loadAvailability(dateValue) {
   const select = document.querySelector("#appointment-time");
-  select.innerHTML =
-    '<option value="">Choose an available time</option>' +
-    times
-      .map(
-        (time) =>
-          `<option value="${time.id}">${escapeHTML(time.name)}</option>`
-      )
-      .join("");
+  const hint = document.querySelector("[data-slot-hint]");
+  hideWaitlistPrompt();
+  currentSlots = [];
+
+  if (!currentDoctor || !dateValue) {
+    select.innerHTML = '<option value="">Pick a date first</option>';
+    hint.textContent = "";
+    return;
+  }
+
+  select.innerHTML = '<option value="">Loading times…</option>';
+  try {
+    const result = await apiRequest(
+      `/doctors/list/${currentDoctor.id}/availability/?from=${dateValue}&days=1`
+    );
+    const day = result.days?.[0] || { slots: [], on_leave: false };
+    currentSlots = day.slots || [];
+
+    if (day.on_leave) {
+      select.innerHTML = '<option value="">Doctor is on leave</option>';
+      hint.textContent = "Dr. " + currentDoctor.full_name + " is away on this date.";
+      return;
+    }
+    if (!currentSlots.length) {
+      select.innerHTML = '<option value="">No clinic on this day</option>';
+      hint.textContent = "This doctor does not hold a clinic on that weekday.";
+      return;
+    }
+
+    select.innerHTML =
+      '<option value="">Choose an available time</option>' +
+      currentSlots
+        .map((slot) => {
+          const suffix = slot.bookable
+            ? ` — ${slot.remaining} of ${slot.capacity} left`
+            : " — full";
+          return `<option value="${slot.time}" ${
+            slot.bookable ? "" : "disabled"
+          }>${escapeHTML(slot.label)}${suffix}</option>`;
+        })
+        .join("");
+
+    const full = currentSlots.filter((slot) => !slot.bookable);
+    hint.textContent = full.length
+      ? `${full.length} of ${currentSlots.length} times are already full.`
+      : "";
+    if (full.length === currentSlots.length) showWaitlistPrompt(full[0]);
+  } catch (error) {
+    select.innerHTML = '<option value="">Could not load times</option>';
+    hint.textContent = error.message;
+  }
+}
+
+function showWaitlistPrompt(slot) {
+  const prompt = document.querySelector("[data-waitlist-prompt]");
+  if (!prompt || !slot) return;
+  prompt.dataset.slotId = slot.time;
+  prompt.querySelector("[data-waitlist-text]").textContent =
+    `Every time on this date is full. Join the waitlist for ${slot.label} and ` +
+    "we will offer you the place if it frees up.";
+  prompt.hidden = false;
+}
+
+function hideWaitlistPrompt() {
+  const prompt = document.querySelector("[data-waitlist-prompt]");
+  if (prompt) prompt.hidden = true;
+}
+
+async function joinWaitlist() {
+  if (!requireAuthentication()) return;
+  const prompt = document.querySelector("[data-waitlist-prompt]");
+  const form = document.querySelector("#booking-modal form");
+  const message = form.querySelector("[data-form-message]");
+  const button = prompt.querySelector("[data-join-waitlist]");
+  message.hidden = true;
+  setLoading(button, true, "Joining…");
+
+  try {
+    await apiRequest("/appointments/waitlist/", {
+      method: "POST",
+      body: JSON.stringify({
+        doctor: currentDoctor.id,
+        time: Number(prompt.dataset.slotId),
+        requested_date: form.elements.scheduled_date.value,
+        symptoms: form.elements.symptoms.value.trim(),
+      }),
+    });
+    window.location.href = "userDetail.html?waitlisted=1";
+  } catch (error) {
+    showMessage(message, error.message);
+  } finally {
+    setLoading(button, false);
+  }
 }
 
 function openBooking() {
@@ -116,7 +203,13 @@ async function handleAppointment(event) {
 document.addEventListener("DOMContentLoaded", () => {
   loadDoctor();
   const dateInput = document.querySelector("#appointment-date");
-  if (dateInput) dateInput.min = new Date().toISOString().split("T")[0];
+  if (dateInput) {
+    dateInput.min = new Date().toISOString().split("T")[0];
+    dateInput.addEventListener("change", () => loadAvailability(dateInput.value));
+  }
+  document
+    .querySelector("[data-join-waitlist]")
+    ?.addEventListener("click", joinWaitlist);
   document.querySelector("[data-close-booking]")?.addEventListener("click", closeBooking);
   document.querySelector("#booking-modal")?.addEventListener("click", (event) => {
     if (event.target.id === "booking-modal") closeBooking();

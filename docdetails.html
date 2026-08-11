@@ -44,8 +44,15 @@
           <div class="field">
             <label for="appointment-time">Available time</label>
             <select id="appointment-time" name="time" required>
-              <option value="">Choose an available time</option>
+              <option value="">Pick a date first</option>
             </select>
+            <small data-slot-hint class="field-hint"></small>
+          </div>
+          <div data-waitlist-prompt class="form-message" hidden>
+            <span data-waitlist-text></span>
+            <button class="button button-secondary" type="button" data-join-waitlist>
+              Join the waitlist
+            </button>
           </div>
           <div class="field">
             <label for="symptoms">How can the doctor help?</label>

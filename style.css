@@ -1108,6 +1108,23 @@ p {
   background: #f2f4f7;
 }
 
+.status.Offered {
+  color: #854708;
+  background: #fef0c7;
+}
+
+.status.Waiting {
+  color: #475467;
+  background: #f2f4f7;
+}
+
+.field-hint {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted, #667085);
+  font-size: 0.8rem;
+}
+
 .empty-state,
 .loading-state,
 .error-state {
