@@ -2,7 +2,7 @@ const API_BASE_URL =
   window.WELLNESS_API_URL ||
   (["localhost", "127.0.0.1"].includes(window.location.hostname)
     ? "http://127.0.0.1:8000"
-    : "https://wellness-oasis-clinic-api.onrender.com");
+    : "https://wellness-oasis-clinic-api-nu.vercel.app");
 
 const AUTH_TOKEN_KEY = "wellness_auth_token";
 const USER_KEY = "wellness_user";
