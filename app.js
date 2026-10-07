@@ -14,7 +14,7 @@ function serviceCard(service) {
       <p>${escapeHTML(service.description).slice(0, 145)}${
         service.description.length > 145 ? "…" : ""
       }</p>
-      <a class="text-link" href="services.html">Explore service →</a>
+      <a class="text-link" href="servicedetails.html?serviceId=${service.id}">Explore service →</a>
     </article>`;
 }
 
