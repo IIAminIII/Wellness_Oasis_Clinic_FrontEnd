@@ -7,6 +7,40 @@ function doctorIdFromUrl() {
   return new URLSearchParams(window.location.search).get("doctorId");
 }
 
+function activeClinicSlots(doctor = currentDoctor) {
+  return (doctor?.available_time || []).filter((slot) => slot.is_active !== false);
+}
+
+// Doctor weekdays use Monday=0 (Python); JS Date.getDay() uses Sunday=0.
+function toDoctorWeekday(jsDay) {
+  return (jsDay + 6) % 7;
+}
+
+function clinicDaysLabel(doctor = currentDoctor) {
+  const byWeekday = new Map(
+    activeClinicSlots(doctor).map((slot) => [slot.weekday, slot.weekday_label])
+  );
+  const labels = [...byWeekday.entries()]
+    .sort((a, b) => a[0] - b[0])
+    .map(([, label]) => label);
+  if (!labels.length) return "";
+  if (labels.length === 1) return labels[0];
+  return `${labels.slice(0, -1).join(", ")} and ${labels[labels.length - 1]}`;
+}
+
+function nextClinicDate(fromDate = new Date()) {
+  const weekdays = new Set(activeClinicSlots().map((slot) => slot.weekday));
+  if (!weekdays.size) return "";
+  const candidate = new Date(fromDate);
+  for (let i = 0; i < 14; i += 1) {
+    if (weekdays.has(toDoctorWeekday(candidate.getDay()))) {
+      return candidate.toLocaleDateString("en-CA");
+    }
+    candidate.setDate(candidate.getDate() + 1);
+  }
+  return "";
+}
+
 function renderDoctor(doctor) {
   const target = document.querySelector("#doctor-detail");
   const specialities = doctor.specialization || [];
@@ -40,6 +74,13 @@ function renderDoctor(doctor) {
         <div class="fact"><small>Availability</small><strong>${
           doctor.is_accepting_patients ? "Accepting patients" : "Currently unavailable"
         }</strong></div>
+        ${
+          clinicDaysLabel(doctor)
+            ? `<div class="fact"><small>Clinic days</small><strong>${escapeHTML(
+                clinicDaysLabel(doctor)
+              )}</strong></div>`
+            : ""
+        }
       </div>
       <button class="button button-primary" data-open-booking ${
         doctor.is_accepting_patients ? "" : "disabled"
@@ -91,8 +132,15 @@ async function loadAvailability(dateValue) {
       return;
     }
     if (!currentSlots.length) {
+      const chosenDay = new Date(`${dateValue}T00:00:00`).toLocaleDateString(
+        "en-US",
+        { weekday: "long" }
+      );
+      const days = clinicDaysLabel();
       select.innerHTML = '<option value="">No clinic on this day</option>';
-      hint.textContent = "This doctor does not hold a clinic on that weekday.";
+      hint.textContent = days
+        ? `No clinic on ${chosenDay}s — Dr. ${currentDoctor.full_name} holds clinics on ${days}. Pick one of those days.`
+        : "This doctor does not hold a clinic on that weekday.";
       return;
     }
 
@@ -166,6 +214,16 @@ function openBooking() {
   if (!requireAuthentication()) return;
   document.querySelector("#booking-modal").classList.add("is-open");
   document.body.style.overflow = "hidden";
+
+  // Start the form on the doctor's next clinic day instead of a blind pick.
+  const dateInput = document.querySelector("#appointment-date");
+  if (dateInput && !dateInput.value) {
+    const suggested = nextClinicDate();
+    if (suggested) {
+      dateInput.value = suggested;
+      loadAvailability(suggested);
+    }
+  }
 }
 
 function closeBooking() {
