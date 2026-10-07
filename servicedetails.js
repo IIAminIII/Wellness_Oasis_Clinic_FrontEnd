@@ -39,10 +39,17 @@ async function loadServiceDoctors(service) {
         '<div class="empty-state">Specialists for this service are joining soon — ask the care desk to be matched with a doctor.</div>';
     } else {
       target.innerHTML = doctors.map(doctorCard).join("");
-      // Booking starts with the specialists below rather than the home page.
-      document
-        .querySelector("[data-book-service]")
-        ?.setAttribute("href", "#service-doctors-section");
+      // Book straight from here: the modal carries a doctor picker preloaded
+      // with this service's specialists.
+      const bookable = doctors.filter((doctor) => doctor.is_accepting_patients);
+      if (bookable.length) {
+        configureBookingDoctorChoices(bookable);
+        const bookButton = document.querySelector("[data-book-service]");
+        bookButton?.addEventListener("click", (event) => {
+          event.preventDefault();
+          openBooking();
+        });
+      }
     }
     section.hidden = false;
   } catch {

@@ -9,6 +9,7 @@
     <script src="api.js" defer></script>
     <script src="ui.js" defer></script>
     <script src="app.js" defer></script>
+    <script src="booking.js" defer></script>
     <script src="servicedetails.js" defer></script>
   </head>
   <body>
@@ -40,6 +41,56 @@
         </div>
       </section>
     </main>
+
+    <div id="booking-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="booking-title">
+      <div class="modal-card">
+        <div class="modal-head">
+          <div>
+            <span class="eyebrow">Reserve your visit</span>
+            <h2 id="booking-title">Book appointment</h2>
+          </div>
+          <button class="icon-button" data-close-booking type="button" aria-label="Close">×</button>
+        </div>
+        <form class="form-grid" onsubmit="handleAppointment(event)">
+          <div class="field">
+            <label for="booking-doctor">Doctor</label>
+            <select id="booking-doctor" required></select>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label for="appointment-type">Visit type</label>
+              <select id="appointment-type" name="appointment_type" required>
+                <option value="Offline">In person</option>
+                <option value="Online">Online</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="appointment-date">Date</label>
+              <input id="appointment-date" name="scheduled_date" type="date" required>
+            </div>
+          </div>
+          <div class="field">
+            <label for="appointment-time">Available time</label>
+            <select id="appointment-time" name="time" required>
+              <option value="">Pick a date first</option>
+            </select>
+            <small data-slot-hint class="field-hint"></small>
+          </div>
+          <div data-waitlist-prompt class="form-message" hidden>
+            <span data-waitlist-text></span>
+            <button class="button button-secondary" type="button" data-join-waitlist>
+              Join the waitlist
+            </button>
+          </div>
+          <div class="field">
+            <label for="symptoms">How can the doctor help?</label>
+            <textarea id="symptoms" name="symptoms" maxlength="2000" placeholder="Briefly describe symptoms or the reason for your visit" required></textarea>
+          </div>
+          <div data-form-message class="form-message" hidden role="alert"></div>
+          <button class="button button-primary button-block" type="submit">Confirm appointment</button>
+        </form>
+      </div>
+    </div>
     <div data-site-footer></div>
   </body>
 </html>
