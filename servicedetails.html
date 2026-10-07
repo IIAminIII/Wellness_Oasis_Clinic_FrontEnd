@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="api.js" defer></script>
     <script src="ui.js" defer></script>
+    <script src="app.js" defer></script>
     <script src="servicedetails.js" defer></script>
   </head>
   <body>
@@ -15,6 +16,17 @@
     <main>
       <section id="service-detail" class="container detail-grid">
         <div class="loading-state">Loading service…</div>
+      </section>
+      <section id="service-doctors-section" class="section" hidden>
+        <div class="container">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">Specialists</span>
+              <h2>Doctors for this service</h2>
+            </div>
+          </div>
+          <div id="service-doctors" class="card-grid"></div>
+        </div>
       </section>
       <section class="section section-white">
         <div class="container cta">
